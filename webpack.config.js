@@ -3,8 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack')
 
-const atlasJsDir=path.resolve(__dirname,'atlas/dashboardv2/public/js')
+const atlasPubDir=path.resolve(__dirname,'atlas/dashboardv2/public')
 const atlasDistJs=path.resolve(__dirname,'atlas/dashboardv2/target/dist/js')
+const atlasJsDir=path.resolve(atlasPubDir,'js')
 const ourModules=path.resolve(__dirname,'node_modules')
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: path.resolve(atlasPubDir,'index.html.tpl'),
       templateParameters: {
         bust: new Date().getTime()
       }
@@ -32,18 +33,6 @@ module.exports = {
   ],
   devServer: {
     contentBase: './dist'
-  },
-  externals:{
-    /**
-     * Dependency for select2, which must be included in a script tag.
-     */
-    jquery: 'jQuery',
-    select2: {
-      /**
-       * This library is AMD only https://github.com/select2/select2/issues/5631
-       */
-      amd: 'select2'
-    }
   },
   module: {
     rules: [
@@ -88,7 +77,12 @@ module.exports = {
        */
       'backbone': path.resolve(ourModules,'backbone/backbone'),
       'backgrid': path.resolve(ourModules,'backgrid/lib/backgrid'),
+      'jquery': path.resolve(ourModules,'jquery/dist/jquery'),
       'underscore': path.resolve(ourModules,'underscore/underscore'),
+      /**
+       * Use full version of select2
+       */
+      'select2': path.resolve(ourModules,'select2/dist/js/select2.full'),
       /**
        * These correspond to the old RequireJS path configs:
        */
