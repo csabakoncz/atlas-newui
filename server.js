@@ -46,7 +46,6 @@ app.get('/js/libs/requirejs/require.js',(req,res)=>{
 
 app.use('/js/external_lib',express.static('atlas/dashboardv2/target/dist/js/external_lib'))
 app.use('/js/libs',express.static('atlas/dashboardv2/target/dist/js/libs'))
-app.use('/js',express.static('src'))
 
 const port = 3030
 app.listen(port, function () {
