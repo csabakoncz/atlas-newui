@@ -5,6 +5,7 @@ const webpack = require('webpack')
 
 const atlasJsDir=path.resolve(__dirname,'atlas/dashboardv2/public/js')
 const atlasDistJs=path.resolve(__dirname,'atlas/dashboardv2/target/dist/js')
+const ourModules=path.resolve(__dirname,'node_modules')
 
 module.exports = {
   mode: 'production',
@@ -82,6 +83,12 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.html'],
     alias: {
+      /**
+       * prevent duplicate libraries being loaded from atlas/dashboardv2/target/node_modules
+       */
+      'backbone': path.resolve(ourModules,'backbone/backbone'),
+      'backgrid': path.resolve(ourModules,'backgrid/lib/backgrid'),
+      'underscore': path.resolve(ourModules,'underscore/underscore'),
       /**
        * These correspond to the old RequireJS path configs:
        */
