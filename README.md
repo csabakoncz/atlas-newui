@@ -3,29 +3,33 @@
 git submodule update --init
 ```
 
-Build Atlas webapp
+Build Atlas webapp:
 ```
 cd atlas
 mvn package -DskipTests -am -pl webapp
 cd ..
 ```
 
-Start Atlas webapp
+Start Atlas webapp:
 ```
 ./start-atlas.sh
 
 ```
-wait to come up on `http://localhost:21000`
+wait for it to come up on `http://localhost:21000`
 
-In another terminal start the server for the UI (Webpack dev server and does
-API proxying to the java webapp):
+In another terminal start the server for the UI (Webpack dev server and
+API proxying to the Java webapp):
 ```
 npm run dev-server
 ```
 
-Production mode:
+### Production mode:
+ - build the Webpack bundles:
 ```
-npm run build # creates bundles in the ./dist folder
-npm run server # server for the ./dist folder and API proxy
+npm run build # populates ./dist folder
+```
+ - Launch Express server for serving the content of `./dist` and API proxy
+```
+npm run server
 ```
 
