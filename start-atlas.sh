@@ -7,7 +7,7 @@ cd atlas/webapp
 CP=""
 for i in `find target/atlas-webapp-$VERSION/WEB-INF/lib -name *.jar`; do CP="$CP:$i"; done
 
-echo $CP
+# echo $CP
 
 java \
  -Dlog4j.configuration=file:../distro/src/conf/atlas-log4j.xml \
