@@ -47,6 +47,17 @@ app.get('/js/libs/requirejs/require.js',(req,res)=>{
 app.use('/js/external_lib',express.static('atlas/dashboardv2/target/dist/js/external_lib'))
 app.use('/js/libs',express.static('atlas/dashboardv2/target/dist/js/libs'))
 
+//login handling
+app.use('/login.jsp', express.static('atlas/webapp/src/main/webapp/login.html.template',{
+    setHeaders: res => res.set('content-type', 'text/html')
+}))
+app.use('/js/modules/atlasLogin.js', express.static('atlas/dashboardv2/target/dist/js/modules/atlasLogin.js'))
+app.use('/j_spring_security_check', proxy(ATLAS_BACKEND,{
+    proxyReqPathResolver: function (req) {
+        return '/j_spring_security_check'
+    }
+}))
+
 const port = 3030
 app.listen(port, function () {
   console.log(`Example app listening on port ${port}!\n`);
