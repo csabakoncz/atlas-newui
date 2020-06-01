@@ -57,6 +57,11 @@ app.use('/j_spring_security_check', proxy(ATLAS_BACKEND,{
         return '/j_spring_security_check'
     }
 }))
+app.use('/logout.html', proxy(ATLAS_BACKEND,{
+    proxyReqPathResolver: function (req) {
+        return '/logout.html'
+    }
+}))
 
 const port = 3030
 app.listen(port, function () {
