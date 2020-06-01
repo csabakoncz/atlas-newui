@@ -52,7 +52,7 @@
     "font-awesome": "4.7.0",
     "handlebars": "^4.7.6",
     "jQuery-QueryBuilder": "2.4.3",
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "jquery-asBreadcrumbs": "0.2.2",
     "jquery-placeholder": "2.3.1",
     "jquery-sparkline": "2.4.0",
