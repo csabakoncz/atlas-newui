@@ -4,7 +4,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack')
 
 const atlasPubDir=path.resolve(__dirname,'atlas/dashboardv2/public')
-const atlasDistJs=path.resolve(__dirname,'atlas/dashboardv2/target/dist/js')
+const atlasExternalLib=path.resolve(atlasPubDir,'js/external_lib')
+
 const atlasJsDir=path.resolve(atlasPubDir,'js')
 const ourModules=path.resolve(__dirname,'node_modules')
 
@@ -64,6 +65,12 @@ module.exports = {
       }
     ],
   },
+  optimization:{
+    splitChunks: {
+      maxSize: 300000,
+      chunks: 'all'
+    }
+  },
   resolveLoader: {
     alias: {
       'hbs': 'handlebars-loader?runtime=handlebars',
@@ -98,20 +105,20 @@ module.exports = {
       views: path.resolve(atlasJsDir, 'views/'),
       'asBreadcrumbs': 'jquery-asBreadcrumbs',
       'backgrid-orderable': 'backgrid-orderable-columns',
-      'backgrid-columnmanager': path.resolve(atlasDistJs, 'external_lib/backgrid-columnmanager/js/Backgrid.ColumnManager'),
+      'backgrid-columnmanager': path.resolve(atlasExternalLib, 'backgrid-columnmanager/js/Backgrid.ColumnManager'),
       'backgrid-sizeable': 'backgrid-sizeable-columns',
       'bootstrap': 'bootstrap/dist/js/bootstrap.min',
       'dagreD3': 'dagre-d3',
       'daterangepicker': 'bootstrap-daterangepicker',
       'jQuery': 'jquery',
-      'jquery-ui': path.resolve(atlasDistJs, 'external_lib/jquery-ui/jquery-ui.min'),
+      'jquery-ui': path.resolve(atlasExternalLib, 'jquery-ui/jquery-ui.min'),
       'jquery-steps': 'jquery-steps/build/jquery.steps.min',
       'query-builder': 'jQuery-QueryBuilder/dist/js/query-builder.standalone.min',
       'sparkline': 'jquery-sparkline',
       'marionette': 'backbone.marionette',
-      'pnotify': path.resolve(atlasDistJs, 'external_lib/pnotify/pnotify.custom.min'),
-      'pnotify.buttons': path.resolve(atlasDistJs, 'external_lib/pnotify/pnotify.custom.min'),
-      'pnotify.confirm': path.resolve(atlasDistJs, 'external_lib/pnotify/pnotify.custom.min'),
+      'pnotify': path.resolve(atlasExternalLib, 'pnotify/pnotify.custom.min'),
+      'pnotify.buttons': path.resolve(atlasExternalLib, 'pnotify/pnotify.custom.min'),
+      'pnotify.confirm': path.resolve(atlasExternalLib, 'pnotify/pnotify.custom.min'),
     }
   },
   output: {
