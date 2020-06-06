@@ -16,59 +16,57 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/site/AboutAtlas_tmpl',
-    'modules/Modal',
-    'models/VCommon',
-    'utils/UrlLinks',
-], function(require, Backbone, AboutAtlasTmpl, Modal, VCommon, UrlLinks) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var AboutAtlasView = Backbone.Marionette.LayoutView.extend(
-        /** @lends AboutAtlasView */
-        {
-            template: AboutAtlasTmpl,
-            /** Layout sub regions */
-            regions: {},
-            /** ui selector cache */
-            ui: {
-                atlasVersion: "[data-id='atlasVersion']"
-            },
-            /** ui events hash */
-            events: function() {},
-            /**
-             * intialize a new AboutAtlasView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, options);
-                var modal = new Modal({
-                    title: 'Apache Atlas',
-                    content: this,
-                    okCloses: true,
-                    showFooter: true,
-                    allowCancel: false,
-                }).open();
+import AboutAtlasTmpl from 'hbs!tmpl/site/AboutAtlas_tmpl';
+import Modal from 'modules/Modal';
+import VCommon from 'models/VCommon';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
 
-                modal.on('closeModal', function() {
-                    modal.trigger('cancel');
-                });
-            },
-            bindEvents: function() {},
-            onRender: function() {
-                var that = this;
-                var url = UrlLinks.versionApiUrl();
-                var VCommonModel = new VCommon();
-                VCommonModel.aboutUs(url, {
-                    success: function(data) {
-                        var str = "<b>Version : </b>" + _.escape(data.Version);
-                        that.ui.atlasVersion.html(str);
-                    },
-                    complete: function() {}
-                });
-            },
+var AboutAtlasView = Backbone.Marionette.LayoutView.extend(
+    /** @lends AboutAtlasView */
+    {
+        template: AboutAtlasTmpl,
+        /** Layout sub regions */
+        regions: {},
+        /** ui selector cache */
+        ui: {
+            atlasVersion: "[data-id='atlasVersion']"
+        },
+        /** ui events hash */
+        events: function() {},
+        /**
+         * intialize a new AboutAtlasView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, options);
+            var modal = new Modal({
+                title: 'Apache Atlas',
+                content: this,
+                okCloses: true,
+                showFooter: true,
+                allowCancel: false,
+            }).open();
 
-        });
-    return AboutAtlasView;
-});
+            modal.on('closeModal', function() {
+                modal.trigger('cancel');
+            });
+        },
+        bindEvents: function() {},
+        onRender: function() {
+            var that = this;
+            var url = UrlLinks.versionApiUrl();
+            var VCommonModel = new VCommon();
+            VCommonModel.aboutUs(url, {
+                success: function(data) {
+                    var str = "<b>Version : </b>" + _.escape(data.Version);
+                    that.ui.atlasVersion.html(str);
+                },
+                complete: function() {}
+            });
+        },
+
+    });
+export default AboutAtlasView;

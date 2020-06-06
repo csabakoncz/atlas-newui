@@ -16,53 +16,51 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/migration/MigrationView_tmpl'
-], function(require, Backbone, MigrationViewTmpl) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var ProfileLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends ProfileLayoutView */
-        {
-            _viewName: 'MigrationView',
+import MigrationViewTmpl from 'hbs!tmpl/migration/MigrationView_tmpl';
+'use strict';
 
-            template: MigrationViewTmpl,
+var ProfileLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends ProfileLayoutView */
+    {
+        _viewName: 'MigrationView',
 
-            /** Layout sub regions */
-            regions: {
-                RStatisticsView: "#r_statisticsView",
-            },
-            /** ui selector cache */
-            ui: {},
-            /** ui events hash */
-            events: function() {},
-            /**
-             * intialize a new ProfileLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                this.apiBaseUrl = this.getBaseUrl(window.location.pathname);
-            },
-            bindEvents: function() {},
-            getBaseUrl: function(url) {
-                var path = url.replace(/\/[\w-]+.(jsp|html)|\/+$/ig, ''),
-                    splitPath = path.split("/");
-                if (splitPath && splitPath[splitPath.length - 1] === "n") {
-                    splitPath.pop();
-                    return splitPath.join("/");
-                }
-                return path;
-            },
-            onRender: function() {
-                var that = this;
-                require(["views/site/Statistics", "collection/VTagList", "utils/UrlLinks"], function(Statistics, VTagList, UrlLinks) {
-                    that.metricCollection = new VTagList();
-                    that.metricCollection.url = UrlLinks.metricsApiUrl();
-                    that.metricCollection.modelAttrName = "data";
-                    that.RStatisticsView.show(new Statistics({ metricCollection: that.metricCollection, isMigrationView: true }));
-                })
+        template: MigrationViewTmpl,
+
+        /** Layout sub regions */
+        regions: {
+            RStatisticsView: "#r_statisticsView",
+        },
+        /** ui selector cache */
+        ui: {},
+        /** ui events hash */
+        events: function() {},
+        /**
+         * intialize a new ProfileLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            this.apiBaseUrl = this.getBaseUrl(window.location.pathname);
+        },
+        bindEvents: function() {},
+        getBaseUrl: function(url) {
+            var path = url.replace(/\/[\w-]+.(jsp|html)|\/+$/ig, ''),
+                splitPath = path.split("/");
+            if (splitPath && splitPath[splitPath.length - 1] === "n") {
+                splitPath.pop();
+                return splitPath.join("/");
             }
-        });
-    return ProfileLayoutView;
-});
+            return path;
+        },
+        onRender: function() {
+            var that = this;
+            require(["views/site/Statistics", "collection/VTagList", "utils/UrlLinks"], function(Statistics, VTagList, UrlLinks) {
+                that.metricCollection = new VTagList();
+                that.metricCollection.url = UrlLinks.metricsApiUrl();
+                that.metricCollection.modelAttrName = "data";
+                that.RStatisticsView.show(new Statistics({ metricCollection: that.metricCollection, isMigrationView: true }));
+            })
+        }
+    });
+export default ProfileLayoutView;

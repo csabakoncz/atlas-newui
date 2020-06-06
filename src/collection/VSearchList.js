@@ -16,82 +16,80 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VSearch',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VSearch, UrlLinks) {
-    'use strict';
-    var VSearchList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.searchApiUrl(),
+import Globals from 'utils/Globals';
 
-            model: VSearch,
+import BaseCollection from 'collection/BaseCollection';
+import VSearch from 'models/VSearch';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VSearchList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.searchApiUrl(),
 
-            initialize: function(options) {
-                _.extend(this, options);
-                this.modelName = 'VSearchList';
-                this.modelAttrName = '';
-            },
-            parseRecords: function(resp, options) {
-                this.queryType = resp.queryType;
-                this.queryText = resp.queryText;
-                this.referredEntities = resp.referredEntities;
-                if (resp.attributes) {
-                    this.dynamicTable = true;
-                    var entities = [];
-                    _.each(resp.attributes.values, function(obj) {
-                        var temp = {};
-                        _.each(obj, function(val, index) {
-                            var key = resp.attributes.name[index];
-                            if (key == "__guid") {
-                                key = "guid"
-                            }
-                            temp[key] = val;
-                        });
-                        entities.push(temp);
+        model: VSearch,
+
+        initialize: function(options) {
+            _.extend(this, options);
+            this.modelName = 'VSearchList';
+            this.modelAttrName = '';
+        },
+        parseRecords: function(resp, options) {
+            this.queryType = resp.queryType;
+            this.queryText = resp.queryText;
+            this.referredEntities = resp.referredEntities;
+            if (resp.attributes) {
+                this.dynamicTable = true;
+                var entities = [];
+                _.each(resp.attributes.values, function(obj) {
+                    var temp = {};
+                    _.each(obj, function(val, index) {
+                        var key = resp.attributes.name[index];
+                        if (key == "__guid") {
+                            key = "guid"
+                        }
+                        temp[key] = val;
                     });
-                    return entities;
-                } else if (resp.entities) {
-                    this.dynamicTable = false;
-                    return resp.entities ? resp.entities : [];
-                } else {
-                    return [];
-                }
-            },
-            getExpimpAudit: function(params, options) {
-                var url = UrlLinks.expimpAudit(params);
-
-                options = _.extend({
-                    contentType: 'application/json',
-                    dataType: 'json',
-                }, options);
-
-                return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-            },
-            getBasicRearchResult: function(options) {
-                var url = UrlLinks.searchApiUrl('basic');
-
-                options = _.extend({
-                    contentType: 'application/json',
-                    dataType: 'json',
-                }, options);
-                options.data = JSON.stringify(options.data);
-
-                return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
+                    entities.push(temp);
+                });
+                return entities;
+            } else if (resp.entities) {
+                this.dynamicTable = false;
+                return resp.entities ? resp.entities : [];
+            } else {
+                return [];
             }
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        getExpimpAudit: function(params, options) {
+            var url = UrlLinks.expimpAudit(params);
+
+            options = _.extend({
+                contentType: 'application/json',
+                dataType: 'json',
+            }, options);
+
+            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+        },
+        getBasicRearchResult: function(options) {
+            var url = UrlLinks.searchApiUrl('basic');
+
+            options = _.extend({
+                contentType: 'application/json',
+                dataType: 'json',
+            }, options);
+            options.data = JSON.stringify(options.data);
+
+            return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
         }
-    );
-    return VSearchList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VSearchList;

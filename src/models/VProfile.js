@@ -16,28 +16,26 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel'
-], function(require, Globals, VBaseModel) {
-    'use strict';
-    var VProfile = VBaseModel.extend({
+import Globals from 'utils/Globals';
 
-        urlRoot: Globals.baseURL,
+import VBaseModel from 'models/BaseModel';
+'use strict';
+var VProfile = VBaseModel.extend({
 
-        defaults: {},
+    urlRoot: Globals.baseURL,
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VLineage';
-            this.bindErrorEvents();
-        },
-        toString: function() {
-            return this.get('id');
-        },
-    }, {});
-    return VProfile;
-});
+    idAttribute: 'id',
+
+    initialize: function() {
+        this.modelName = 'VLineage';
+        this.bindErrorEvents();
+    },
+    toString: function() {
+        return this.get('id');
+    },
+}, {});
+export default VProfile;

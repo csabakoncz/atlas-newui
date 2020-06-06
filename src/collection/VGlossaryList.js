@@ -16,57 +16,55 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VGlossary',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VGlossary, UrlLinks) {
-    'use strict';
-    var VGlossaryList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.glossaryApiUrl(),
+import Globals from 'utils/Globals';
 
-            model: VGlossary,
+import BaseCollection from 'collection/BaseCollection';
+import VGlossary from 'models/VGlossary';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VGlossaryList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.glossaryApiUrl(),
 
-            initialize: function() {
-                this.modelName = 'VGlossary';
-                this.modelAttrName = '';
-            },
-            parseRecords: function(resp, options) {
-                if (_.isEmpty(this.modelAttrName)) {
-                    return resp;
-                } else {
-                    return resp[this.modelAttrName]
-                }
-            },
-            getCategory: function(options) {
-                var url = UrlLinks.categoryApiUrl({ "guid": options.guid, "related": options.related }),
-                    apiOptions = _.extend({
-                        contentType: 'application/json',
-                        dataType: 'json'
-                    }, options.ajaxOptions);
-                return this.constructor.nonCrudOperation.call(this, url, 'GET', apiOptions);
-            },
-            getTerm: function(options) {
-                var url = UrlLinks.termApiUrl({ "guid": options.guid, "related": options.related }),
-                    apiOptions = _.extend({
-                        contentType: 'application/json',
-                        dataType: 'json'
-                    }, options.ajaxOptions);
-                return this.constructor.nonCrudOperation.call(this, url, 'GET', apiOptions);
+        model: VGlossary,
+
+        initialize: function() {
+            this.modelName = 'VGlossary';
+            this.modelAttrName = '';
+        },
+        parseRecords: function(resp, options) {
+            if (_.isEmpty(this.modelAttrName)) {
+                return resp;
+            } else {
+                return resp[this.modelAttrName]
             }
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        getCategory: function(options) {
+            var url = UrlLinks.categoryApiUrl({ "guid": options.guid, "related": options.related }),
+                apiOptions = _.extend({
+                    contentType: 'application/json',
+                    dataType: 'json'
+                }, options.ajaxOptions);
+            return this.constructor.nonCrudOperation.call(this, url, 'GET', apiOptions);
+        },
+        getTerm: function(options) {
+            var url = UrlLinks.termApiUrl({ "guid": options.guid, "related": options.related }),
+                apiOptions = _.extend({
+                    contentType: 'application/json',
+                    dataType: 'json'
+                }, options.ajaxOptions);
+            return this.constructor.nonCrudOperation.call(this, url, 'GET', apiOptions);
         }
-    );
-    return VGlossaryList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VGlossaryList;

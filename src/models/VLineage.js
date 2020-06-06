@@ -16,28 +16,26 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, VBaseModel, UrlLinks) {
-    'use strict';
-    var VLineage = VBaseModel.extend({
+import Globals from 'utils/Globals';
 
-        urlRoot: UrlLinks.baseURL,
+import VBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VLineage = VBaseModel.extend({
 
-        defaults: {},
+    urlRoot: UrlLinks.baseURL,
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VLineage';
-        },
-        toString: function() {
-            return this.get('id');
-        },
-    }, {});
-    return VLineage;
-});
+    idAttribute: 'id',
+
+    initialize: function() {
+        this.modelName = 'VLineage';
+    },
+    toString: function() {
+        return this.get('id');
+    },
+}, {});
+export default VLineage;

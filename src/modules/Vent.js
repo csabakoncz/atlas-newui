@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-define(['backbone.wreqr'], function(Wreqr) {
-    "use strict";
-    return new Wreqr.EventAggregator();
-});
+import Wreqr from 'backbone.wreqr';
+
+"use strict";
+export default new Wreqr.EventAggregator();

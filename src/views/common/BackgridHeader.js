@@ -16,252 +16,250 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'underscore',
-    'utils/Utils',
-    'utils/Globals',
-    'backgrid-filter',
-    'backgrid-paginator',
-    'select2',
-], function(require, Backbone, _, Utils) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var HeaderSearchCell = Backbone.View.extend({
+import _ from 'underscore';
+import Utils from 'utils/Utils';
+import 'utils/Globals';
+import 'backgrid-filter';
+import 'backgrid-paginator';
+import 'select2';
+'use strict';
 
-        tagName: 'td',
+var HeaderSearchCell = Backbone.View.extend({
 
-        className: 'backgrid-filter',
+    tagName: 'td',
 
-        template: _.template('<input type="search" <% if (placeholder) { %> placeholder="<%- placeholder %>" <% } %> name="<%- name %>" <% if (style) { %> style="<%- style %>" <% } %> />'),
-        //<a class='clear' href='#'>&times;</a>'),
+    className: 'backgrid-filter',
 
-        placeholder: '',
+    template: _.template('<input type="search" <% if (placeholder) { %> placeholder="<%- placeholder %>" <% } %> name="<%- name %>" <% if (style) { %> style="<%- style %>" <% } %> />'),
+    //<a class='clear' href='#'>&times;</a>'),
 
-        events: {
-            'keyup input': 'evKeyUp',
-            'submit': 'search'
-        },
+    placeholder: '',
 
-        initialize: function(options) {
-            _.extend(this, _.pick(options, 'column'));
-            this.name = this.column.get('name');
-            if (this.column.get('reName') !== undefined)
-                this.name = this.column.get('reName');
+    events: {
+        'keyup input': 'evKeyUp',
+        'submit': 'search'
+    },
 
-            var collection = this.collection,
-                self = this;
-            if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
-                collection.queryParams[this.name] = function() {
-                    return self.searchBox().val() || null;
-                };
-            }
-        },
+    initialize: function(options) {
+        _.extend(this, _.pick(options, 'column'));
+        this.name = this.column.get('name');
+        if (this.column.get('reName') !== undefined)
+            this.name = this.column.get('reName');
 
-        render: function() {
-            this.$el.empty().append(this.template({
-                name: this.column.get('name'),
-                placeholder: this.column.get('placeholder') || 'Search',
-                style: this.column.get('headerSearchStyle')
-            }));
-            this.$el.addClass('renderable');
-            this.delegateEvents();
-            return this;
-
-        },
-
-        evKeyUp: function(e) {
-            var $clearButton = this.clearButton();
-            var searchTerms = this.searchBox().val();
-
-            if (!e.shiftKey) {
-                this.search();
-            }
-
-            if (searchTerms) {
-                $clearButton.show();
-            } else {
-                $clearButton.hide();
-            }
-        },
-
-        searchBox: function() {
-            return this.$el.find('input[type=search]');
-        },
-
-        clearButton: function() {
-            return this.$el.find('.clear');
-        },
-
-        search: function() {
-            var data = {};
-            // go back to the first page on search
-            var collection = this.collection;
-            if (Backbone.PageableCollection &&
-                collection instanceof Backbone.PageableCollection &&
-                collection.mode === 'server') {
-                collection.state.currentPage = collection.state.firstPage;
-            }
-            var query = this.searchBox().val();
-            if (query) data[this.name] = query;
-            if (collection.extraSearchParams) {
-                _.extend(data, collection.extraSearchParams);
-            }
-            if (collection.mode === 'server') {
-                collection.fetch({
-                    data: data,
-                    reset: true,
-                    success: function() {},
-                    error: function(msResponse) {
-                        Utils.notifyError('Error', 'Invalid input data!');
-                    }
-                });
-            } else if (collection.mode === 'client') {
-
-            }
-        },
-
-        clear: function(e) {
-            if (e) e.preventDefault();
-            this.searchBox().val(null);
-            this.collection.fetch({
-                reset: true
-            });
+        var collection = this.collection,
+            self = this;
+        if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
+            collection.queryParams[this.name] = function() {
+                return self.searchBox().val() || null;
+            };
         }
-    });
+    },
 
-    var HeaderFilterCell = Backbone.View.extend({
+    render: function() {
+        this.$el.empty().append(this.template({
+            name: this.column.get('name'),
+            placeholder: this.column.get('placeholder') || 'Search',
+            style: this.column.get('headerSearchStyle')
+        }));
+        this.$el.addClass('renderable');
+        this.delegateEvents();
+        return this;
 
-        tagName: 'td',
+    },
 
-        className: 'backgrid-filter',
+    evKeyUp: function(e) {
+        var $clearButton = this.clearButton();
+        var searchTerms = this.searchBox().val();
 
-        template: _.template('<select >  <option>ALL</option>' +
-            '<% _.each(list, function(data) {' +
-            'if(_.isObject(data)){ %>' +
-            '<option value="<%= data.value %>"><%= data.label %></option>' +
-            '<% }else{ %>' +
-            '<option value="<%= data %>"><%= data %></option>' +
-            '<% } %>' +
-            '<% }); %></select>'),
+        if (!e.shiftKey) {
+            this.search();
+        }
 
-        placeholder: '',
-        events: {
-            'click': function() {},
-        },
-        initialize: function(options) {
-            _.extend(this, _.pick(options, 'column'));
-            this.name = this.column.get('name');
-            this.headerFilterOptions = this.column.get('headerFilterOptions');
-        },
-        render: function() {
-            var that = this;
-            this.$el.empty().append(this.template({
-                name: this.column.get('name'),
-                list: this.headerFilterOptions.filterList,
-            }));
+        if (searchTerms) {
+            $clearButton.show();
+        } else {
+            $clearButton.hide();
+        }
+    },
 
-            this.$el.find('select').select2({
-                allowClear: true,
-                closeOnSelect: false,
-                width: this.headerFilterOptions.filterWidth || '100%',
-                height: this.headerFilterOptions.filterHeight || '20px',
-            });
+    searchBox: function() {
+        return this.$el.find('input[type=search]');
+    },
 
-            this.$el.addClass('renderable');
+    clearButton: function() {
+        return this.$el.find('.clear');
+    },
 
-            this.$el.find('select').on('click', function(e) {
-                that.search(e.currentTarget.value);
-            });
-            return this;
-        },
-        search: function(selectedOptionValue) {
-            var data = {},
-                query;
-            // go back to the first page on search
-            var collection = this.collection;
-            if (Backbone.PageableCollection &&
-                collection instanceof Backbone.PageableCollection &&
-                collection.mode === 'server') {
-                collection.state.currentPage = collection.state.firstPage;
-            }
-            if (selectedOptionValue !== 'ALL') {
-                query = selectedOptionValue;
-            }
-            if (query) {
-                data[this.name] = query;
-            }
-            if (collection.extraSearchParams) {
-                _.extend(data, collection.extraSearchParams);
-            }
+    search: function() {
+        var data = {};
+        // go back to the first page on search
+        var collection = this.collection;
+        if (Backbone.PageableCollection &&
+            collection instanceof Backbone.PageableCollection &&
+            collection.mode === 'server') {
+            collection.state.currentPage = collection.state.firstPage;
+        }
+        var query = this.searchBox().val();
+        if (query) data[this.name] = query;
+        if (collection.extraSearchParams) {
+            _.extend(data, collection.extraSearchParams);
+        }
+        if (collection.mode === 'server') {
             collection.fetch({
                 data: data,
-                reset: true
+                reset: true,
+                success: function() {},
+                error: function(msResponse) {
+                    Utils.notifyError('Error', 'Invalid input data!');
+                }
             });
-        },
-        /*clear: function (e) {
-            if (e) e.preventDefault();
-            this.searchBox().val(null);
-            this.collection.fetch({reset: true});
-        }*/
-    });
-    var HeaderRow = Backgrid.Row.extend({
-        requiredOptions: ['columns', 'collection'],
+        } else if (collection.mode === 'client') {
 
-        initialize: function() {
-            Backgrid.Row.prototype.initialize.apply(this, arguments);
-        },
-        makeCell: function(column, options) {
-            var headerCell;
-            switch (true) {
-                case (column.has('canHeaderSearch') && column.get('canHeaderSearch') === true):
-                    headerCell = new HeaderSearchCell({
-                        column: column,
-                        collection: this.collection,
-                    });
-                    break;
-                case (column.has('canHeaderFilter') && column.get('canHeaderFilter') === true):
-                    headerCell = new HeaderFilterCell({
-                        column: column,
-                        collection: this.collection,
-                    });
-                    break;
-                default:
-                    headerCell = new Backbone.View({
-                        tagName: 'td'
-                    });
-            }
-            return headerCell;
         }
-    });
-    var Header = Backgrid.Header.extend({
+    },
 
-        initialize: function(options) {
-            var args = Array.prototype.slice.apply(arguments);
-            Backgrid.Header.prototype.initialize.apply(this, args);
-
-            this.searchRow = new HeaderRow({
-                columns: this.columns,
-                collection: this.collection
-            });
-        },
-        /**
-          Renders this table head with a single row of header cells.
-          */
-        render: function() {
-            var args = Array.prototype.slice.apply(arguments);
-            Backgrid.Header.prototype.render.apply(this, args);
-
-            this.$el.append(this.searchRow.render().$el);
-            return this;
-        },
-        remove: function() {
-            var args = Array.prototype.slice.apply(arguments);
-            Backgrid.Header.prototype.remove.apply(this, args);
-
-            this.searchRow.remove.apply(this.searchRow, arguments);
-            return Backbone.View.prototype.remove.apply(this, arguments);
-        }
-    });
-    return Header;
+    clear: function(e) {
+        if (e) e.preventDefault();
+        this.searchBox().val(null);
+        this.collection.fetch({
+            reset: true
+        });
+    }
 });
+
+var HeaderFilterCell = Backbone.View.extend({
+
+    tagName: 'td',
+
+    className: 'backgrid-filter',
+
+    template: _.template('<select >  <option>ALL</option>' +
+        '<% _.each(list, function(data) {' +
+        'if(_.isObject(data)){ %>' +
+        '<option value="<%= data.value %>"><%= data.label %></option>' +
+        '<% }else{ %>' +
+        '<option value="<%= data %>"><%= data %></option>' +
+        '<% } %>' +
+        '<% }); %></select>'),
+
+    placeholder: '',
+    events: {
+        'click': function() {},
+    },
+    initialize: function(options) {
+        _.extend(this, _.pick(options, 'column'));
+        this.name = this.column.get('name');
+        this.headerFilterOptions = this.column.get('headerFilterOptions');
+    },
+    render: function() {
+        var that = this;
+        this.$el.empty().append(this.template({
+            name: this.column.get('name'),
+            list: this.headerFilterOptions.filterList,
+        }));
+
+        this.$el.find('select').select2({
+            allowClear: true,
+            closeOnSelect: false,
+            width: this.headerFilterOptions.filterWidth || '100%',
+            height: this.headerFilterOptions.filterHeight || '20px',
+        });
+
+        this.$el.addClass('renderable');
+
+        this.$el.find('select').on('click', function(e) {
+            that.search(e.currentTarget.value);
+        });
+        return this;
+    },
+    search: function(selectedOptionValue) {
+        var data = {},
+            query;
+        // go back to the first page on search
+        var collection = this.collection;
+        if (Backbone.PageableCollection &&
+            collection instanceof Backbone.PageableCollection &&
+            collection.mode === 'server') {
+            collection.state.currentPage = collection.state.firstPage;
+        }
+        if (selectedOptionValue !== 'ALL') {
+            query = selectedOptionValue;
+        }
+        if (query) {
+            data[this.name] = query;
+        }
+        if (collection.extraSearchParams) {
+            _.extend(data, collection.extraSearchParams);
+        }
+        collection.fetch({
+            data: data,
+            reset: true
+        });
+    },
+    /*clear: function (e) {
+        if (e) e.preventDefault();
+        this.searchBox().val(null);
+        this.collection.fetch({reset: true});
+    }*/
+});
+var HeaderRow = Backgrid.Row.extend({
+    requiredOptions: ['columns', 'collection'],
+
+    initialize: function() {
+        Backgrid.Row.prototype.initialize.apply(this, arguments);
+    },
+    makeCell: function(column, options) {
+        var headerCell;
+        switch (true) {
+            case (column.has('canHeaderSearch') && column.get('canHeaderSearch') === true):
+                headerCell = new HeaderSearchCell({
+                    column: column,
+                    collection: this.collection,
+                });
+                break;
+            case (column.has('canHeaderFilter') && column.get('canHeaderFilter') === true):
+                headerCell = new HeaderFilterCell({
+                    column: column,
+                    collection: this.collection,
+                });
+                break;
+            default:
+                headerCell = new Backbone.View({
+                    tagName: 'td'
+                });
+        }
+        return headerCell;
+    }
+});
+var Header = Backgrid.Header.extend({
+
+    initialize: function(options) {
+        var args = Array.prototype.slice.apply(arguments);
+        Backgrid.Header.prototype.initialize.apply(this, args);
+
+        this.searchRow = new HeaderRow({
+            columns: this.columns,
+            collection: this.collection
+        });
+    },
+    /**
+      Renders this table head with a single row of header cells.
+      */
+    render: function() {
+        var args = Array.prototype.slice.apply(arguments);
+        Backgrid.Header.prototype.render.apply(this, args);
+
+        this.$el.append(this.searchRow.render().$el);
+        return this;
+    },
+    remove: function() {
+        var args = Array.prototype.slice.apply(arguments);
+        Backgrid.Header.prototype.remove.apply(this, args);
+
+        this.searchRow.remove.apply(this.searchRow, arguments);
+        return Backbone.View.prototype.remove.apply(this, arguments);
+    }
+});
+export default Header;

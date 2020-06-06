@@ -16,55 +16,53 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/glossary/CreateEditCategoryTermLayoutView_tmpl',
-    'utils/Utils',
-    'utils/UrlLinks'
-], function(require, Backbone, CreateEditCategoryTermLayoutViewTmpl, Utils, UrlLinks) {
+import Backbone from 'backbone';
 
-    var CreateEditCategoryTermLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends CreateEditCategoryTermLayoutView */
-        {
-            _viewName: 'CreateEditCategoryTermLayoutView',
+import CreateEditCategoryTermLayoutViewTmpl from 'hbs!tmpl/glossary/CreateEditCategoryTermLayoutView_tmpl';
+import Utils from 'utils/Utils';
+import UrlLinks from 'utils/UrlLinks';
 
-            template: CreateEditCategoryTermLayoutViewTmpl,
+var CreateEditCategoryTermLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends CreateEditCategoryTermLayoutView */
+    {
+        _viewName: 'CreateEditCategoryTermLayoutView',
 
-            templateHelpers: function() {
-                return {
-                    create: this.create,
-                    modelJSON: this.modelJSON
-                };
-            },
+        template: CreateEditCategoryTermLayoutViewTmpl,
 
-            /** Layout sub regions */
-            regions: {},
+        templateHelpers: function() {
+            return {
+                create: this.create,
+                modelJSON: this.modelJSON
+            };
+        },
 
-            /** ui selector cache */
-            ui: {
-                "qualifiedName": "[data-id='qualifiedName']",
-                "name": "[data-id='name']",
-                "shortDescription": "[data-id='shortDescription']",
-                "longDescription": "[data-id='longDescription']",
-                "categoryTermForm": "[data-id='categoryTermForm']"
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                return events;
-            },
-            /**
-             * intialize a new CreateEditCategoryTermLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'glossaryCollection', 'modelJSON'));
-                if (!this.modelJSON) {
-                    this.create = true;
-                }
-            },
-            bindEvents: function() {},
-            onRender: function() {}
-        });
-    return CreateEditCategoryTermLayoutView;
-});
+        /** Layout sub regions */
+        regions: {},
+
+        /** ui selector cache */
+        ui: {
+            "qualifiedName": "[data-id='qualifiedName']",
+            "name": "[data-id='name']",
+            "shortDescription": "[data-id='shortDescription']",
+            "longDescription": "[data-id='longDescription']",
+            "categoryTermForm": "[data-id='categoryTermForm']"
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            return events;
+        },
+        /**
+         * intialize a new CreateEditCategoryTermLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'glossaryCollection', 'modelJSON'));
+            if (!this.modelJSON) {
+                this.create = true;
+            }
+        },
+        bindEvents: function() {},
+        onRender: function() {}
+    });
+export default CreateEditCategoryTermLayoutView;

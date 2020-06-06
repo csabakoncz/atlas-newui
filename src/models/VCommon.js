@@ -16,38 +16,36 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, VBaseModel, UrlLinks) {
-    'use strict';
-    var VCommon = VBaseModel.extend({
-        urlRoot: UrlLinks.baseUrl + '',
+import Globals from 'utils/Globals';
 
-        defaults: {},
+import VBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VCommon = VBaseModel.extend({
+    urlRoot: UrlLinks.baseUrl + '',
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VCommon';
-        },
-        toString: function() {
-            return this.get('name');
-        },
-        /*************************
-         * Non - CRUD operations
-         *************************/
-        aboutUs: function(url, options) {
-            var url = url;
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        }
-    }, {});
-    return VCommon;
-});
+    idAttribute: 'id',
+
+    initialize: function() {
+        this.modelName = 'VCommon';
+    },
+    toString: function() {
+        return this.get('name');
+    },
+    /*************************
+     * Non - CRUD operations
+     *************************/
+    aboutUs: function(url, options) {
+        var url = url;
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    }
+}, {});
+export default VCommon;

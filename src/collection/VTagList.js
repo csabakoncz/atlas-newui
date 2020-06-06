@@ -16,47 +16,45 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VTag',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VTag, UrlLinks) {
-    'use strict';
-    var VTagList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.classificationDefApiUrl(),
-            model: VTag,
-            initialize: function() {
-                this.modelName = 'VTag';
-                this.modelAttrName = 'classificationDefs';
-            },
-            parseRecords: function(resp, options) {
-                try {
-                    if (!this.modelAttrName) {
-                        throw new Error("this.modelAttrName not defined for " + this);
-                    }
-                    if (resp[this.modelAttrName]) {
-                        return resp[this.modelAttrName];
-                    } else {
-                        return resp
-                    }
+import Globals from 'utils/Globals';
 
-                } catch (e) {
-                    console.log(e);
-                }
-            },
+import BaseCollection from 'collection/BaseCollection';
+import VTag from 'models/VTag';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VTagList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.classificationDefApiUrl(),
+        model: VTag,
+        initialize: function() {
+            this.modelName = 'VTag';
+            this.modelAttrName = 'classificationDefs';
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
-        }
-    );
-    return VTagList;
-});
+        parseRecords: function(resp, options) {
+            try {
+                if (!this.modelAttrName) {
+                    throw new Error("this.modelAttrName not defined for " + this);
+                }
+                if (resp[this.modelAttrName]) {
+                    return resp[this.modelAttrName];
+                } else {
+                    return resp
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+        },
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VTagList;

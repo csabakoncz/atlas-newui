@@ -16,268 +16,266 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/glossary/AssignTermLayoutView_tmpl',
-    'utils/Utils',
-    'utils/Enums',
-    'utils/Messages',
-    'utils/UrlLinks',
-    'modules/Modal',
-    'jquery-steps'
-], function(require, Backbone, AssignTermLayoutViewTmpl, Utils, Enums, Messages, UrlLinks, Modal) {
+import Backbone from 'backbone';
 
-    var AssignTermLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends AssignTermLayoutView */
-        {
-            _viewName: 'AssignTermLayoutView',
+import AssignTermLayoutViewTmpl from 'hbs!tmpl/glossary/AssignTermLayoutView_tmpl';
+import Utils from 'utils/Utils';
+import Enums from 'utils/Enums';
+import Messages from 'utils/Messages';
+import UrlLinks from 'utils/UrlLinks';
+import Modal from 'modules/Modal';
+import 'jquery-steps';
 
-            template: AssignTermLayoutViewTmpl,
+var AssignTermLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends AssignTermLayoutView */
+    {
+        _viewName: 'AssignTermLayoutView',
 
-            templateHelpers: function() {
-                return {
-                    isAttributeRelationView: this.isAttributeRelationView,
-                    selectedTermAttributeList: Enums.termRelationAttributeList[this.selectedTermAttribute]
-                };
-            },
+        template: AssignTermLayoutViewTmpl,
 
-            /** Layout sub regions */
-            regions: {
-                RGlossaryTree: "#r_glossaryTree"
-            },
+        templateHelpers: function() {
+            return {
+                isAttributeRelationView: this.isAttributeRelationView,
+                selectedTermAttributeList: Enums.termRelationAttributeList[this.selectedTermAttribute]
+            };
+        },
 
-            /** ui selector cache */
-            ui: {
-                wizard: '[data-id="wizard"]'
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                return events;
-            },
-            /**
-             * intialize a new AssignTermLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'glossaryCollection', 'guid', 'callback', 'hideLoader', 'isCategoryView', 'categoryData', 'isTermView', 'termData', 'isAttributeRelationView', 'selectedTermAttribute', 'associatedTerms', 'multiple'));
-                var that = this;
-                this.options = options;
-                if (!this.isCategoryView && !this.isTermView && !this.isAttributeRelationView) {
-                    this.isEntityView = true;
+        /** Layout sub regions */
+        regions: {
+            RGlossaryTree: "#r_glossaryTree"
+        },
+
+        /** ui selector cache */
+        ui: {
+            wizard: '[data-id="wizard"]'
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            return events;
+        },
+        /**
+         * intialize a new AssignTermLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'glossaryCollection', 'guid', 'callback', 'hideLoader', 'isCategoryView', 'categoryData', 'isTermView', 'termData', 'isAttributeRelationView', 'selectedTermAttribute', 'associatedTerms', 'multiple'));
+            var that = this;
+            this.options = options;
+            if (!this.isCategoryView && !this.isTermView && !this.isAttributeRelationView) {
+                this.isEntityView = true;
+            }
+            this.glossary = {
+                selectedItem: {}
+            }
+            var title = "";
+            if (this.isCategoryView || this.isEntityView) {
+                title = ("Assign term to " + (this.isCategoryView ? "Category" : "entity"))
+            } else if (this.isAttributeRelationView) {
+                title = "Assign term to " + this.selectedTermAttribute;
+            } else {
+                title = "Assign Category to term";
+            }
+            this.modal = new Modal({
+                "title": title,
+                "content": this,
+                "cancelText": "Cancel",
+                "okText": "Assign",
+                "allowCancel": true,
+                "showFooter": this.isAttributeRelationView ? false : true,
+                "mainClass": "wizard-modal",
+                "okCloses": false
+            });
+            this.modal.open();
+            this.modal.$el.find('button.ok').attr("disabled", true);
+            this.modal.on('closeModal', function() {
+                that.modal.trigger('cancel');
+                if (that.assignTermError && that.hideLoader) {
+                    that.hideLoader();
                 }
-                this.glossary = {
-                    selectedItem: {}
+                if (options.onModalClose) {
+                    options.onModalClose()
                 }
-                var title = "";
-                if (this.isCategoryView || this.isEntityView) {
-                    title = ("Assign term to " + (this.isCategoryView ? "Category" : "entity"))
-                } else if (this.isAttributeRelationView) {
-                    title = "Assign term to " + this.selectedTermAttribute;
-                } else {
-                    title = "Assign Category to term";
-                }
-                this.modal = new Modal({
-                    "title": title,
-                    "content": this,
-                    "cancelText": "Cancel",
-                    "okText": "Assign",
-                    "allowCancel": true,
-                    "showFooter": this.isAttributeRelationView ? false : true,
-                    "mainClass": "wizard-modal",
-                    "okCloses": false
-                });
-                this.modal.open();
-                this.modal.$el.find('button.ok').attr("disabled", true);
-                this.modal.on('closeModal', function() {
-                    that.modal.trigger('cancel');
-                    if (that.assignTermError && that.hideLoader) {
-                        that.hideLoader();
-                    }
-                    if (options.onModalClose) {
-                        options.onModalClose()
-                    }
-                });
-                this.modal.on('ok', function() {
-                    that.assignTerm();
-                });
-                this.bindEvents();
-            },
-            bindEvents: function() {
-                this.listenTo(this.glossaryCollection, "node_selected", function(skip) {
-                    this.modal.$el.find('button.ok').attr("disabled", false);
-                }, this);
-            },
-            onRender: function() {
-                this.renderGlossaryTree();
-                var that = this;
-                if (this.isAttributeRelationView) {
-                    this.ui.wizard.steps({
-                        headerTag: "h3",
-                        bodyTag: "section",
-                        transitionEffect: "slideLeft",
-                        autoFocus: true,
-                        enableCancelButton: true,
-                        transitionEffect: $.fn.steps.transitionEffect.none,
-                        transitionEffectSpeed: 200,
-                        labels: {
-                            cancel: "Cancel",
-                            finish: "Assign",
-                            next: "Next",
-                            previous: "Previous",
-                            loading: "Loading ..."
-                        },
-                        onStepChanging: function(event, currentIndex, newIndex) {
-                            var isMatch = that.glossary.selectedItem.type == "GlossaryTerm";
-                            if (!isMatch) {
-                                Utils.notifyWarn({
-                                    content: "Please select Term for association"
-                                });
-                            }
-                            return isMatch
-                        },
-                        onFinished: function(event, currentIndex) {
-                            that.assignTerm();
-                        },
-                        onCanceled: function(event) {
-                            that.modal.trigger('cancel');
-                        },
-                    });
-                }
-            },
-            assignTerm: function() {
-                this.modal.$el.find('button.ok').showButtonLoader();
-                this.assignTermError = false;
-                var that = this,
-                    data = [],
-                    termAttributeFormData = [],
-                    selectedItem = this.glossary.selectedItem,
-                    selectedGuid = selectedItem.guid,
-                    termName = selectedItem.text,
-                    ajaxOptions = {
-                        success: function(rModel, response) {
-                            Utils.notifySuccess({
-                                content: (that.isCategoryView || that.isEntityView || that.isAttributeRelationView ? "Term" : "Category") + " is associated successfully "
+            });
+            this.modal.on('ok', function() {
+                that.assignTerm();
+            });
+            this.bindEvents();
+        },
+        bindEvents: function() {
+            this.listenTo(this.glossaryCollection, "node_selected", function(skip) {
+                this.modal.$el.find('button.ok').attr("disabled", false);
+            }, this);
+        },
+        onRender: function() {
+            this.renderGlossaryTree();
+            var that = this;
+            if (this.isAttributeRelationView) {
+                this.ui.wizard.steps({
+                    headerTag: "h3",
+                    bodyTag: "section",
+                    transitionEffect: "slideLeft",
+                    autoFocus: true,
+                    enableCancelButton: true,
+                    transitionEffect: $.fn.steps.transitionEffect.none,
+                    transitionEffectSpeed: 200,
+                    labels: {
+                        cancel: "Cancel",
+                        finish: "Assign",
+                        next: "Next",
+                        previous: "Previous",
+                        loading: "Loading ..."
+                    },
+                    onStepChanging: function(event, currentIndex, newIndex) {
+                        var isMatch = that.glossary.selectedItem.type == "GlossaryTerm";
+                        if (!isMatch) {
+                            Utils.notifyWarn({
+                                content: "Please select Term for association"
                             });
-                            that.modal.trigger('closeModal');
-                            if (that.callback) {
-                                that.callback();
-                            }
-                        },
-                        cust_error: function() {
-                            that.modal.$el.find('button.ok').hideButtonLoader();
-                            that.assignTermError = true;
+                        }
+                        return isMatch
+                    },
+                    onFinished: function(event, currentIndex) {
+                        that.assignTerm();
+                    },
+                    onCanceled: function(event) {
+                        that.modal.trigger('cancel');
+                    },
+                });
+            }
+        },
+        assignTerm: function() {
+            this.modal.$el.find('button.ok').showButtonLoader();
+            this.assignTermError = false;
+            var that = this,
+                data = [],
+                termAttributeFormData = [],
+                selectedItem = this.glossary.selectedItem,
+                selectedGuid = selectedItem.guid,
+                termName = selectedItem.text,
+                ajaxOptions = {
+                    success: function(rModel, response) {
+                        Utils.notifySuccess({
+                            content: (that.isCategoryView || that.isEntityView || that.isAttributeRelationView ? "Term" : "Category") + " is associated successfully "
+                        });
+                        that.modal.trigger('closeModal');
+                        if (that.callback) {
+                            that.callback();
                         }
                     },
-                    model = new this.glossaryCollection.model();
-                if (this.isCategoryView) {
-                    data = $.extend(true, {}, this.categoryData);
-                    if (data.terms) {
-                        data.terms.push({ "termGuid": selectedGuid });
-                    } else {
-                        data.terms = [{ "termGuid": selectedGuid }];
+                    cust_error: function() {
+                        that.modal.$el.find('button.ok').hideButtonLoader();
+                        that.assignTermError = true;
                     }
-                    model.assignTermToCategory(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
-                } else if (this.isTermView) {
-                    data = $.extend(true, {}, this.termData);
-                    if (data.categories) {
-                        data.categories.push({ "categoryGuid": selectedGuid });
-                    } else {
-                        data.categories = [{ "categoryGuid": selectedGuid }];
-                    }
-                    model.assignCategoryToTerm(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
-                } else if (this.isAttributeRelationView) {
-                    termAttributeFormData = this.$('[data-id="termAttributeForm"]').serializeArray().reduce(function(obj, item) {
-                            obj[item.name] = item.value;
-                            return obj;
-                        }, {}),
-                        data = $.extend(true, {}, this.termData);
-                    if (data[this.selectedTermAttribute]) {
-                        data[this.selectedTermAttribute].push(_.extend({ "termGuid": selectedGuid }, termAttributeFormData));
-                    } else {
-                        data[this.selectedTermAttribute] = [_.extend({ "termGuid": selectedGuid }, termAttributeFormData)];
-                    }
-                    model.assignTermToAttributes(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
+                },
+                model = new this.glossaryCollection.model();
+            if (this.isCategoryView) {
+                data = $.extend(true, {}, this.categoryData);
+                if (data.terms) {
+                    data.terms.push({ "termGuid": selectedGuid });
                 } else {
-                    var deletedEntity = [],
-                        skipEntity = [];
-
-                    if (this.multiple) {
-                        _.each(that.multiple, function(entity, i) {
-                            var name = Utils.getName(entity.model);
-                            if (Enums.entityStateReadOnly[entity.model.status]) {
-                                deletedEntity.push(name);
-                            } else {
-                                if (_.indexOf((entity.model.meaningNames || _.pluck(entity.model.meanings, 'displayText')), termName) === -1) {
-                                    data.push({ guid: entity.model.guid })
-                                } else {
-                                    skipEntity.push(name);
-                                }
-                            }
-                        });
-                        if (deletedEntity.length) {
-                            Utils.notifyError({
-                                html: true,
-                                content: "<b>" + deletedEntity.join(', ') +
-                                    "</b> " + (deletedEntity.length === 1 ? "entity " : "entities ") +
-                                    Messages.assignTermDeletedEntity
-                            });
-                        }
-                    } else {
-                        data.push({ "guid": that.guid });
-                    }
-                    if (skipEntity.length) {
-                        var text = "<b>" + skipEntity.length + " of " + that.multiple.length +
-                            "</b> entities selected have already been associated with <b>" + termName +
-                            "</b> term, Do you want to associate the term with other entities ?",
-                            removeCancelButton = false;
-                        if ((skipEntity.length + deletedEntity.length) === that.multiple.length) {
-                            text = (skipEntity.length > 1 ? "All selected" : "Selected") + " entities have already been associated with <b>" + termName + "</b> term";
-                            removeCancelButton = true;
-                        }
-                        var notifyObj = {
-                            text: text,
-                            modal: true,
-                            ok: function(argument) {
-                                if (data.length) {
-                                    model.assignTermToEntity(selectedGuid, _.extend(ajaxOptions, { data: JSON.stringify(data) }));
-                                }
-                            },
-                            cancel: function(argument) {}
-                        }
-                        if (removeCancelButton) {
-                            notifyObj['confirm'] = {
-                                confirm: true,
-                                buttons: [{
-                                        text: 'Ok',
-                                        addClass: 'btn-atlas btn-md',
-                                        click: function(notice) {
-                                            notice.remove();
-                                        }
-                                    },
-                                    null
-                                ]
-                            }
-                        }
-                        Utils.notifyConfirm(notifyObj);
-                    } else if (data.length) {
-                        model.assignTermToEntity(selectedGuid, _.extend(ajaxOptions, { data: JSON.stringify(data) }));
-                    }
+                    data.terms = [{ "termGuid": selectedGuid }];
                 }
-            },
-            renderGlossaryTree: function() {
-                var that = this;
-                require(['views/glossary/GlossaryLayoutView'], function(GlossaryLayoutView) {
-                    that.RGlossaryTree.show(new GlossaryLayoutView(_.extend({
-                        "isAssignTermView": that.isCategoryView,
-                        "isAssignCategoryView": that.isTermView,
-                        "isAssignEntityView": that.isEntityView,
-                        "isAssignAttributeRelationView": that.isAttributeRelationView,
-                        "glossary": that.glossary,
-                        "associatedTerms": that.associatedTerms
-                    }, that.options)));
-                });
-            },
-        });
-    return AssignTermLayoutView;
-});
+                model.assignTermToCategory(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
+            } else if (this.isTermView) {
+                data = $.extend(true, {}, this.termData);
+                if (data.categories) {
+                    data.categories.push({ "categoryGuid": selectedGuid });
+                } else {
+                    data.categories = [{ "categoryGuid": selectedGuid }];
+                }
+                model.assignCategoryToTerm(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
+            } else if (this.isAttributeRelationView) {
+                termAttributeFormData = this.$('[data-id="termAttributeForm"]').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value;
+                        return obj;
+                    }, {}),
+                    data = $.extend(true, {}, this.termData);
+                if (data[this.selectedTermAttribute]) {
+                    data[this.selectedTermAttribute].push(_.extend({ "termGuid": selectedGuid }, termAttributeFormData));
+                } else {
+                    data[this.selectedTermAttribute] = [_.extend({ "termGuid": selectedGuid }, termAttributeFormData)];
+                }
+                model.assignTermToAttributes(_.extend(ajaxOptions, { data: JSON.stringify(data), guid: data.guid }));
+            } else {
+                var deletedEntity = [],
+                    skipEntity = [];
+
+                if (this.multiple) {
+                    _.each(that.multiple, function(entity, i) {
+                        var name = Utils.getName(entity.model);
+                        if (Enums.entityStateReadOnly[entity.model.status]) {
+                            deletedEntity.push(name);
+                        } else {
+                            if (_.indexOf((entity.model.meaningNames || _.pluck(entity.model.meanings, 'displayText')), termName) === -1) {
+                                data.push({ guid: entity.model.guid })
+                            } else {
+                                skipEntity.push(name);
+                            }
+                        }
+                    });
+                    if (deletedEntity.length) {
+                        Utils.notifyError({
+                            html: true,
+                            content: "<b>" + deletedEntity.join(', ') +
+                                "</b> " + (deletedEntity.length === 1 ? "entity " : "entities ") +
+                                Messages.assignTermDeletedEntity
+                        });
+                    }
+                } else {
+                    data.push({ "guid": that.guid });
+                }
+                if (skipEntity.length) {
+                    var text = "<b>" + skipEntity.length + " of " + that.multiple.length +
+                        "</b> entities selected have already been associated with <b>" + termName +
+                        "</b> term, Do you want to associate the term with other entities ?",
+                        removeCancelButton = false;
+                    if ((skipEntity.length + deletedEntity.length) === that.multiple.length) {
+                        text = (skipEntity.length > 1 ? "All selected" : "Selected") + " entities have already been associated with <b>" + termName + "</b> term";
+                        removeCancelButton = true;
+                    }
+                    var notifyObj = {
+                        text: text,
+                        modal: true,
+                        ok: function(argument) {
+                            if (data.length) {
+                                model.assignTermToEntity(selectedGuid, _.extend(ajaxOptions, { data: JSON.stringify(data) }));
+                            }
+                        },
+                        cancel: function(argument) {}
+                    }
+                    if (removeCancelButton) {
+                        notifyObj['confirm'] = {
+                            confirm: true,
+                            buttons: [{
+                                    text: 'Ok',
+                                    addClass: 'btn-atlas btn-md',
+                                    click: function(notice) {
+                                        notice.remove();
+                                    }
+                                },
+                                null
+                            ]
+                        }
+                    }
+                    Utils.notifyConfirm(notifyObj);
+                } else if (data.length) {
+                    model.assignTermToEntity(selectedGuid, _.extend(ajaxOptions, { data: JSON.stringify(data) }));
+                }
+            }
+        },
+        renderGlossaryTree: function() {
+            var that = this;
+            require(['views/glossary/GlossaryLayoutView'], function(GlossaryLayoutView) {
+                that.RGlossaryTree.show(new GlossaryLayoutView(_.extend({
+                    "isAssignTermView": that.isCategoryView,
+                    "isAssignCategoryView": that.isTermView,
+                    "isAssignEntityView": that.isEntityView,
+                    "isAssignAttributeRelationView": that.isAttributeRelationView,
+                    "glossary": that.glossary,
+                    "associatedTerms": that.associatedTerms
+                }, that.options)));
+            });
+        },
+    });
+export default AssignTermLayoutView;

@@ -16,40 +16,38 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, VBaseModel, UrlLinks) {
-    'use strict';
-    var VSearch = VBaseModel.extend({
-        urlRoot: UrlLinks.searchApiUrl(),
+import Globals from 'utils/Globals';
 
-        defaults: {},
+import VBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VSearch = VBaseModel.extend({
+    urlRoot: UrlLinks.searchApiUrl(),
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VSearch';
-        },
-        toString: function() {
-            return this.get('name');
-        },
-        /*************************
-         * Non - CRUD operations
-         *************************/
-        getEntity: function(id, options) {
-            var url = UrlLinks.entitiesApiUrl({ guid: id });
+    idAttribute: 'id',
 
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
+    initialize: function() {
+        this.modelName = 'VSearch';
+    },
+    toString: function() {
+        return this.get('name');
+    },
+    /*************************
+     * Non - CRUD operations
+     *************************/
+    getEntity: function(id, options) {
+        var url = UrlLinks.entitiesApiUrl({ guid: id });
 
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        }
-    }, {});
-    return VSearch;
-});
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    }
+}, {});
+export default VSearch;

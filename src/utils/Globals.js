@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-define(["require"], function(require) {
-    "use strict";
+"use strict";
 
-    var Globals = {};
-    Globals.settings = {};
-    Globals.settings.PAGE_SIZE = 25;
-    Globals.saveApplicationState = {
-        mainPageState: {},
-        tabState: {
-            stateChanged: false,
-            tagUrl: "#!/tag",
-            searchUrl: "#!/search",
-            glossaryUrl: "#!/glossary",
-            administratorUrl: "#!/administrator"
-        },
-        detailPageState: {}
-    };
-    Globals.userLogedIn = {
-        status: false,
-        response: {}
-    };
-    Globals.serviceTypeMap = {};
-    Globals.entityImgPath = "/img/entity-icon/";
-    Globals.DEFAULT_UI = "v2";
-    Globals.dateFormat = "YYYY/MM/DD";
-    Globals.dateTimeFormat = "YYYY/MM/DD HH:mm:ss";
-    return Globals;
-});
+var Globals = {};
+Globals.settings = {};
+Globals.settings.PAGE_SIZE = 25;
+Globals.saveApplicationState = {
+    mainPageState: {},
+    tabState: {
+        stateChanged: false,
+        tagUrl: "#!/tag",
+        searchUrl: "#!/search",
+        glossaryUrl: "#!/glossary",
+        administratorUrl: "#!/administrator"
+    },
+    detailPageState: {}
+};
+Globals.userLogedIn = {
+    status: false,
+    response: {}
+};
+Globals.serviceTypeMap = {};
+Globals.entityImgPath = "/img/entity-icon/";
+Globals.DEFAULT_UI = "v2";
+Globals.dateFormat = "YYYY/MM/DD";
+Globals.dateTimeFormat = "YYYY/MM/DD HH:mm:ss";
+export default Globals;

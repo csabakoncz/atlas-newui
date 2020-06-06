@@ -16,44 +16,42 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VLineage',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VLineage, UrlLinks) {
-    'use strict';
-    var VLineageList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.baseURL,
+import Globals from 'utils/Globals';
 
-            model: VLineage,
+import BaseCollection from 'collection/BaseCollection';
+import VLineage from 'models/VLineage';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VLineageList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.baseURL,
 
-            initialize: function() {
-                this.modelName = 'VLineage';
-                this.modelAttrName = 'results';
-            },
-            getLineage: function(id, options) {
-                var url = UrlLinks.lineageApiUrl(id);
+        model: VLineage,
 
-                options = _.extend({
-                    contentType: 'application/json',
-                    dataType: 'json'
-                }, options);
-
-                return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-            }
+        initialize: function() {
+            this.modelName = 'VLineage';
+            this.modelAttrName = 'results';
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        getLineage: function(id, options) {
+            var url = UrlLinks.lineageApiUrl(id);
+
+            options = _.extend({
+                contentType: 'application/json',
+                dataType: 'json'
+            }, options);
+
+            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
         }
-    );
-    return VLineageList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VLineageList;

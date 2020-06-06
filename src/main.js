@@ -16,163 +16,162 @@
  * limitations under the License.
  */
 
-define(['App',
-    'router/Router',
-    'utils/Helper',
-    'utils/CommonViewFunction',
-    'utils/Globals',
-    'utils/UrlLinks',
-    'collection/VEntityList',
-    'collection/VTagList',
-    'utils/Enums',
-    'utils/Overrides',
-    'bootstrap',
-    'd3',
-    'select2'
-], function(App, Router, Helper, CommonViewFunction, Globals, UrlLinks, VEntityList, VTagList, Enums) {
-    var that = this;
-    this.asyncFetchCounter = 7 + (Enums.addOnEntities.length + 1);
-    // entity
-    this.entityDefCollection = new VEntityList();
-    this.entityDefCollection.url = UrlLinks.entitiesDefApiUrl();
-    // typeHeaders
-    this.typeHeaders = new VTagList();
-    this.typeHeaders.url = UrlLinks.typesApiUrl();
-    // enum
-    this.enumDefCollection = new VTagList();
-    this.enumDefCollection.url = UrlLinks.enumDefApiUrl();
-    this.enumDefCollection.modelAttrName = "enumDefs";
-    // classfication
-    this.classificationDefCollection = new VTagList();
-    // metric
-    this.metricCollection = new VTagList();
-    this.metricCollection.url = UrlLinks.metricsApiUrl();
-    this.metricCollection.modelAttrName = "data";
-    // businessMetadata
-    this.businessMetadataDefCollection = new VEntityList();
-    this.businessMetadataDefCollection.url = UrlLinks.businessMetadataDefApiUrl();
-    this.businessMetadataDefCollection.modelAttrName = "businessMetadataDefs";
+import App from 'App';
 
-    App.appRouter = new Router({
-        entityDefCollection: this.entityDefCollection,
-        typeHeaders: this.typeHeaders,
-        enumDefCollection: this.enumDefCollection,
-        classificationDefCollection: this.classificationDefCollection,
-        metricCollection: this.metricCollection,
-        businessMetadataDefCollection: this.businessMetadataDefCollection
-    });
+import Router from 'router/Router';
+import Helper from 'utils/Helper';
+import CommonViewFunction from 'utils/CommonViewFunction';
+import Globals from 'utils/Globals';
+import UrlLinks from 'utils/UrlLinks';
+import VEntityList from 'collection/VEntityList';
+import VTagList from 'collection/VTagList';
+import Enums from 'utils/Enums';
+import 'utils/Overrides';
+import 'bootstrap';
+import 'd3';
+import 'select2';
+var that = this;
+this.asyncFetchCounter = 7 + (Enums.addOnEntities.length + 1);
+// entity
+this.entityDefCollection = new VEntityList();
+this.entityDefCollection.url = UrlLinks.entitiesDefApiUrl();
+// typeHeaders
+this.typeHeaders = new VTagList();
+this.typeHeaders.url = UrlLinks.typesApiUrl();
+// enum
+this.enumDefCollection = new VTagList();
+this.enumDefCollection.url = UrlLinks.enumDefApiUrl();
+this.enumDefCollection.modelAttrName = "enumDefs";
+// classfication
+this.classificationDefCollection = new VTagList();
+// metric
+this.metricCollection = new VTagList();
+this.metricCollection.url = UrlLinks.metricsApiUrl();
+this.metricCollection.modelAttrName = "data";
+// businessMetadata
+this.businessMetadataDefCollection = new VEntityList();
+this.businessMetadataDefCollection.url = UrlLinks.businessMetadataDefApiUrl();
+this.businessMetadataDefCollection.modelAttrName = "businessMetadataDefs";
 
-    var startApp = function() {
-        if (that.asyncFetchCounter === 0) {
-            App.start();
-        }
-    };
-    CommonViewFunction.userDataFetch({
-        url: UrlLinks.sessionApiUrl(),
-        callback: function(response) {
-            if (response) {
-                if (response.userName) {
-                    Globals.userLogedIn.status = true;
-                    Globals.userLogedIn.response = response;
-                }
-                if (response['atlas.entity.create.allowed'] !== undefined) {
-                    Globals.entityCreate = response['atlas.entity.create.allowed'];
-                }
-                if (response['atlas.entity.update.allowed'] !== undefined) {
-                    Globals.entityUpdate = response['atlas.entity.update.allowed'];
-                }
-                if (response['atlas.ui.editable.entity.types'] !== undefined) {
-                    var entityTypeList = response['atlas.ui.editable.entity.types'].trim().split(",");
-                    if (entityTypeList.length) {
-                        if (entityTypeList[0] === "*") {
-                            Globals.entityTypeConfList = [];
-                        } else if (entityTypeList.length > 0) {
-                            Globals.entityTypeConfList = entityTypeList;
-                        }
+App.appRouter = new Router({
+    entityDefCollection: this.entityDefCollection,
+    typeHeaders: this.typeHeaders,
+    enumDefCollection: this.enumDefCollection,
+    classificationDefCollection: this.classificationDefCollection,
+    metricCollection: this.metricCollection,
+    businessMetadataDefCollection: this.businessMetadataDefCollection
+});
+
+var startApp = function() {
+    if (that.asyncFetchCounter === 0) {
+        App.start();
+    }
+};
+CommonViewFunction.userDataFetch({
+    url: UrlLinks.sessionApiUrl(),
+    callback: function(response) {
+        if (response) {
+            if (response.userName) {
+                Globals.userLogedIn.status = true;
+                Globals.userLogedIn.response = response;
+            }
+            if (response['atlas.entity.create.allowed'] !== undefined) {
+                Globals.entityCreate = response['atlas.entity.create.allowed'];
+            }
+            if (response['atlas.entity.update.allowed'] !== undefined) {
+                Globals.entityUpdate = response['atlas.entity.update.allowed'];
+            }
+            if (response['atlas.ui.editable.entity.types'] !== undefined) {
+                var entityTypeList = response['atlas.ui.editable.entity.types'].trim().split(",");
+                if (entityTypeList.length) {
+                    if (entityTypeList[0] === "*") {
+                        Globals.entityTypeConfList = [];
+                    } else if (entityTypeList.length > 0) {
+                        Globals.entityTypeConfList = entityTypeList;
                     }
                 }
-                if (response['atlas.ui.default.version'] !== undefined) {
-                    Globals.DEFAULT_UI = response['atlas.ui.default.version'];
-                }
             }
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
-    this.entityDefCollection.fetch({
-        complete: function() {
-            that.entityDefCollection.fullCollection.comparator = function(model) {
-                return model.get('name').toLowerCase();
-            };
-            that.entityDefCollection.fullCollection.sort({ silent: true });
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
-    this.typeHeaders.fetch({
-        complete: function() {
-            that.typeHeaders.fullCollection.comparator = function(model) {
-                return model.get('name').toLowerCase();
+            if (response['atlas.ui.default.version'] !== undefined) {
+                Globals.DEFAULT_UI = response['atlas.ui.default.version'];
             }
-            that.typeHeaders.fullCollection.sort({ silent: true });
-            --that.asyncFetchCounter;
-            startApp();
         }
-    });
-    this.enumDefCollection.fetch({
-        complete: function() {
-            that.enumDefCollection.fullCollection.comparator = function(model) {
-                return model.get('name').toLowerCase();
-            };
-            that.enumDefCollection.fullCollection.sort({ silent: true });
-            --that.asyncFetchCounter;
-            startApp();
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
+this.entityDefCollection.fetch({
+    complete: function() {
+        that.entityDefCollection.fullCollection.comparator = function(model) {
+            return model.get('name').toLowerCase();
+        };
+        that.entityDefCollection.fullCollection.sort({ silent: true });
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
+this.typeHeaders.fetch({
+    complete: function() {
+        that.typeHeaders.fullCollection.comparator = function(model) {
+            return model.get('name').toLowerCase();
         }
-    });
-    this.classificationDefCollection.fetch({
-        complete: function() {
-            that.classificationDefCollection.fullCollection.comparator = function(model) {
-                return model.get('name').toLowerCase();
-            };
-            that.classificationDefCollection.fullCollection.sort({ silent: true });
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
+        that.typeHeaders.fullCollection.sort({ silent: true });
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
+this.enumDefCollection.fetch({
+    complete: function() {
+        that.enumDefCollection.fullCollection.comparator = function(model) {
+            return model.get('name').toLowerCase();
+        };
+        that.enumDefCollection.fullCollection.sort({ silent: true });
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
+this.classificationDefCollection.fetch({
+    complete: function() {
+        that.classificationDefCollection.fullCollection.comparator = function(model) {
+            return model.get('name').toLowerCase();
+        };
+        that.classificationDefCollection.fullCollection.sort({ silent: true });
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
 
-    this.metricCollection.fetch({
-        complete: function() {
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
+this.metricCollection.fetch({
+    complete: function() {
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
 
-    this.businessMetadataDefCollection.fetch({
-        complete: function() {
-            that.businessMetadataDefCollection.fullCollection.comparator = function(model) {
-                return model.get('name').toLowerCase();
-            };
-            that.businessMetadataDefCollection.fullCollection.sort({ silent: true });
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
+this.businessMetadataDefCollection.fetch({
+    complete: function() {
+        that.businessMetadataDefCollection.fullCollection.comparator = function(model) {
+            return model.get('name').toLowerCase();
+        };
+        that.businessMetadataDefCollection.fullCollection.sort({ silent: true });
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
 
-    CommonViewFunction.fetchRootEntityAttributes({
-        url: UrlLinks.rootEntityDefUrl(Enums.addOnEntities[0]),
-        entity: Enums.addOnEntities,
-        callback: function() {
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
+CommonViewFunction.fetchRootEntityAttributes({
+    url: UrlLinks.rootEntityDefUrl(Enums.addOnEntities[0]),
+    entity: Enums.addOnEntities,
+    callback: function() {
+        --that.asyncFetchCounter;
+        startApp();
+    }
+});
 
-    CommonViewFunction.fetchRootClassificationAttributes({
-        url: UrlLinks.rootClassificationDefUrl(Enums.addOnClassification[0]),
-        classification: Enums.addOnClassification,
-        callback: function() {
-            --that.asyncFetchCounter;
-            startApp();
-        }
-    });
+CommonViewFunction.fetchRootClassificationAttributes({
+    url: UrlLinks.rootClassificationDefUrl(Enums.addOnClassification[0]),
+    classification: Enums.addOnClassification,
+    callback: function() {
+        --that.asyncFetchCounter;
+        startApp();
+    }
 });

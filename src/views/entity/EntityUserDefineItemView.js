@@ -15,102 +15,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define(['require',
-    'backbone',
-    'hbs!tmpl/entity/EntityUserDefineItemView_tmpl'
+import Backbone from 'backbone';
 
-], function(require, Backbone, EntityUserDefineItemView_tmpl) {
-    'use strict';
+import EntityUserDefineItemView_tmpl from 'hbs!tmpl/entity/EntityUserDefineItemView_tmpl';
+'use strict';
 
-    return Backbone.Marionette.ItemView.extend({
-        _viewName: 'EntityUserDefineItemView',
+export default Backbone.Marionette.ItemView.extend({
+    _viewName: 'EntityUserDefineItemView',
 
-        template: EntityUserDefineItemView_tmpl,
+    template: EntityUserDefineItemView_tmpl,
 
-        templateHelpers: function() {
-            return {
-                items: this.items,
-                allValueRemovedUpdate: this.allValueRemovedUpdate
-            };
-        },
+    templateHelpers: function() {
+        return {
+            items: this.items,
+            allValueRemovedUpdate: this.allValueRemovedUpdate
+        };
+    },
 
-        /** Layout sub regions */
-        regions: {},
+    /** Layout sub regions */
+    regions: {},
 
-        /** ui selector cache */
-        ui: {
-            itemKey: "[data-type='key']",
-            itemValue: "[data-type='value']",
-            addItem: "[data-id='addItem']",
-            deleteItem: "[data-id='deleteItem']",
-            charSupportMsg: "[data-id='charSupportMsg']"
-        },
-        /** ui events hash */
-        events: function() {
-            var events = {};
-            events['input ' + this.ui.itemKey] = 'onItemKeyChange';
-            events['input ' + this.ui.itemValue] = 'onItemValueChange';
-            events['click ' + this.ui.addItem] = 'onAddItemClick';
-            events['click ' + this.ui.deleteItem] = 'onDeleteItemClick';
-            return events;
-        },
+    /** ui selector cache */
+    ui: {
+        itemKey: "[data-type='key']",
+        itemValue: "[data-type='value']",
+        addItem: "[data-id='addItem']",
+        deleteItem: "[data-id='deleteItem']",
+        charSupportMsg: "[data-id='charSupportMsg']"
+    },
+    /** ui events hash */
+    events: function() {
+        var events = {};
+        events['input ' + this.ui.itemKey] = 'onItemKeyChange';
+        events['input ' + this.ui.itemValue] = 'onItemValueChange';
+        events['click ' + this.ui.addItem] = 'onAddItemClick';
+        events['click ' + this.ui.deleteItem] = 'onDeleteItemClick';
+        return events;
+    },
 
-        /**
-         * intialize a new GlobalExclusionComponentView Layout
-         * @constructs
-         */
-        initialize: function(options) {
-            if (options.items.length === 0) {
-                this.items = [{ key: "", value: "" }];
-            } else {
-                this.items = $.extend(true, [], options.items);
-            }
-            this.updateParentButtonState = options.updateButtonState;
-        },
-        onRender: function() {},
-        onAddItemClick: function(e) {
-            this.allValueRemovedUpdate = false;
-            var el = e.currentTarget;
-            this.items.splice(parseInt(el.dataset.index) + 1, 0, { key: "", value: "" });
-            this.render();
-        },
-        onDeleteItemClick: function(e) {
-            var el = e.currentTarget;
-            this.items.splice(el.dataset.index, 1);
-            this.allValueRemovedUpdate = false;
-            if (this.items.length === 0) {
-                var updated = this.updateParentButtonState();
-                if (updated === false) {
-                    this.allValueRemovedUpdate = true;
-                    this.render();
-                }
-            } else {
+    /**
+     * intialize a new GlobalExclusionComponentView Layout
+     * @constructs
+     */
+    initialize: function(options) {
+        if (options.items.length === 0) {
+            this.items = [{ key: "", value: "" }];
+        } else {
+            this.items = $.extend(true, [], options.items);
+        }
+        this.updateParentButtonState = options.updateButtonState;
+    },
+    onRender: function() {},
+    onAddItemClick: function(e) {
+        this.allValueRemovedUpdate = false;
+        var el = e.currentTarget;
+        this.items.splice(parseInt(el.dataset.index) + 1, 0, { key: "", value: "" });
+        this.render();
+    },
+    onDeleteItemClick: function(e) {
+        var el = e.currentTarget;
+        this.items.splice(el.dataset.index, 1);
+        this.allValueRemovedUpdate = false;
+        if (this.items.length === 0) {
+            var updated = this.updateParentButtonState();
+            if (updated === false) {
+                this.allValueRemovedUpdate = true;
                 this.render();
             }
-        },
-        onItemKeyChange: function(e) {
-            var el = e.currentTarget;
-            this.handleCharSupport(el);
-            if (!el.value.trim().includes(':')) {
-                this.items[el.dataset.index].key = _.escape(el.value.trim());
-            }
-        },
-        onItemValueChange: function(e) {
-            var el = e.currentTarget;
-            this.handleCharSupport(el);
-            if (!el.value.trim().includes(':')) {
-                this.items[el.dataset.index].value = _.escape(el.value.trim());
-            }
-        },
-        handleCharSupport: function(el) {
-            if (el.value.trim().includes(':')) {
-                el.setAttribute('class', 'form-control errorClass');
-                this.ui.charSupportMsg.html("These special character '(:)' are not supported.");
-            } else {
-                el.setAttribute('class', 'form-control');
-                this.ui.charSupportMsg.html("");
-            }
+        } else {
+            this.render();
         }
-    });
-
+    },
+    onItemKeyChange: function(e) {
+        var el = e.currentTarget;
+        this.handleCharSupport(el);
+        if (!el.value.trim().includes(':')) {
+            this.items[el.dataset.index].key = _.escape(el.value.trim());
+        }
+    },
+    onItemValueChange: function(e) {
+        var el = e.currentTarget;
+        this.handleCharSupport(el);
+        if (!el.value.trim().includes(':')) {
+            this.items[el.dataset.index].value = _.escape(el.value.trim());
+        }
+    },
+    handleCharSupport: function(el) {
+        if (el.value.trim().includes(':')) {
+            el.setAttribute('class', 'form-control errorClass');
+            this.ui.charSupportMsg.html("These special character '(:)' are not supported.");
+        } else {
+            el.setAttribute('class', 'form-control');
+            this.ui.charSupportMsg.html("");
+        }
+    }
 });

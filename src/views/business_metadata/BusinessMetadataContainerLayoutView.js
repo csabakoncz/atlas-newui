@@ -16,78 +16,75 @@
  * limitations under the License.
  */
 
-define([
-    "require",
-    "backbone",
-    "hbs!tmpl/business_metadata/BusinessMetadataContainerLayoutView_tmpl"
-], function(require, Backbone, BusinessMetadataContainerLayoutViewTmpl) {
-    "use strict";
+import Backbone from 'backbone';
 
-    var BusinessMetadataContainerLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends BusinessMetadataContainerLayoutView */
-        {
-            _viewName: "BusinessMetadataContainerLayoutView",
+import BusinessMetadataContainerLayoutViewTmpl from 'hbs!tmpl/business_metadata/BusinessMetadataContainerLayoutView_tmpl';
+"use strict";
 
-            template: BusinessMetadataContainerLayoutViewTmpl,
+var BusinessMetadataContainerLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends BusinessMetadataContainerLayoutView */
+    {
+        _viewName: "BusinessMetadataContainerLayoutView",
 
-            /** Layout sub regions */
-            regions: {
-                RBusinessMetadataDetailContainer: "#r_businessMetadataDetailContainer",
-                RBusinessMetadataAttrContainer: "#r_businessMetadataAttrContainer"
-            },
+        template: BusinessMetadataContainerLayoutViewTmpl,
 
-            /** ui selector cache */
-            ui: {},
-            /** ui events hash */
-            events: function() {},
-            /**
-             * intialize a new TagLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, options);
-            },
-            bindEvents: function() {},
-            onRender: function() {
-                this.updateView();
-            },
-            updateView: function() {
-                this.model = this.businessMetadataDefCollection.fullCollection.findWhere({ guid: this.guid });
-                this.renderBusinessMetadataDetailLayoutView();
-                this.renderBusinessMetadataAttrLayoutView();
-            },
-            renderBusinessMetadataDetailLayoutView: function() {
-                var that = this;
-                require(["views/business_metadata/BusinessMetadataDetailLayoutView"], function(BusinessMetadataDetailLayoutView) {
-                    if (that.isDestroyed) {
-                        return;
-                    }
-                    that.RBusinessMetadataDetailContainer.show(new BusinessMetadataDetailLayoutView({
-                        businessMetadataDefCollection: that.businessMetadataDefCollection,
-                        guid: that.guid,
-                        model: that.model,
-                        enumDefCollection: that.enumDefCollection,
-                        typeHeaders: that.typeHeaders
-                    }));
-                });
-            },
-            renderBusinessMetadataAttrLayoutView: function() {
-                var that = this;
-                require(["views/business_metadata/BusinessMetadataAttrTableLayoutView"], function(BusinessMetadataAttrTableLayoutView) {
-                    if (that.isDestroyed) {
-                        return;
-                    }
-                    that.RBusinessMetadataAttrContainer.show(new BusinessMetadataAttrTableLayoutView({
-                        businessMetadataDefCollection: that.businessMetadataDefCollection,
-                        model: that.model,
-                        guid: that.guid,
-                        typeHeaders: that.typeHeaders,
-                        enumDefCollection: that.enumDefCollection,
-                        entityDefCollection: that.entityDefCollection
-                    }));
-                });
-            }
+        /** Layout sub regions */
+        regions: {
+            RBusinessMetadataDetailContainer: "#r_businessMetadataDetailContainer",
+            RBusinessMetadataAttrContainer: "#r_businessMetadataAttrContainer"
+        },
+
+        /** ui selector cache */
+        ui: {},
+        /** ui events hash */
+        events: function() {},
+        /**
+         * intialize a new TagLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, options);
+        },
+        bindEvents: function() {},
+        onRender: function() {
+            this.updateView();
+        },
+        updateView: function() {
+            this.model = this.businessMetadataDefCollection.fullCollection.findWhere({ guid: this.guid });
+            this.renderBusinessMetadataDetailLayoutView();
+            this.renderBusinessMetadataAttrLayoutView();
+        },
+        renderBusinessMetadataDetailLayoutView: function() {
+            var that = this;
+            require(["views/business_metadata/BusinessMetadataDetailLayoutView"], function(BusinessMetadataDetailLayoutView) {
+                if (that.isDestroyed) {
+                    return;
+                }
+                that.RBusinessMetadataDetailContainer.show(new BusinessMetadataDetailLayoutView({
+                    businessMetadataDefCollection: that.businessMetadataDefCollection,
+                    guid: that.guid,
+                    model: that.model,
+                    enumDefCollection: that.enumDefCollection,
+                    typeHeaders: that.typeHeaders
+                }));
+            });
+        },
+        renderBusinessMetadataAttrLayoutView: function() {
+            var that = this;
+            require(["views/business_metadata/BusinessMetadataAttrTableLayoutView"], function(BusinessMetadataAttrTableLayoutView) {
+                if (that.isDestroyed) {
+                    return;
+                }
+                that.RBusinessMetadataAttrContainer.show(new BusinessMetadataAttrTableLayoutView({
+                    businessMetadataDefCollection: that.businessMetadataDefCollection,
+                    model: that.model,
+                    guid: that.guid,
+                    typeHeaders: that.typeHeaders,
+                    enumDefCollection: that.enumDefCollection,
+                    entityDefCollection: that.entityDefCollection
+                }));
+            });
         }
-    );
-    return BusinessMetadataContainerLayoutView;
-});
+    }
+);
+export default BusinessMetadataContainerLayoutView;
