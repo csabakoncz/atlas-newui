@@ -50,7 +50,11 @@ var SearchDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderSearchResultLayoutView: function() {
             var that = this;
-            require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
                 if (that.RSearchResultLayoutView) {
                     that.RSearchResultLayoutView.show(new SearchResultLayoutView(that.options));
                 }

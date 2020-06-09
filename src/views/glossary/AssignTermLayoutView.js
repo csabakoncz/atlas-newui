@@ -266,7 +266,11 @@ var AssignTermLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderGlossaryTree: function() {
             var that = this;
-            require(['views/glossary/GlossaryLayoutView'], function(GlossaryLayoutView) {
+            Promise.all([import('views/glossary/GlossaryLayoutView')]).then(function(
+                [{
+                    default: GlossaryLayoutView
+                }]
+            ) {
                 that.RGlossaryTree.show(new GlossaryLayoutView(_.extend({
                     "isAssignTermView": that.isCategoryView,
                     "isAssignCategoryView": that.isTermView,

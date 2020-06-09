@@ -307,7 +307,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAddTermBtn: function(e) {
             var that = this;
-            require(['views/glossary/AssignTermLayoutView'], function(AssignTermLayoutView) {
+            Promise.all([import('views/glossary/AssignTermLayoutView')]).then(function(
+                [{
+                    default: AssignTermLayoutView
+                }]
+            ) {
                 var glossary = that.glossaryCollection;
                 if (that.value && that.value.gId) {
                     var foundModel = that.glossaryCollection.find({ guid: that.value.gId });
@@ -336,7 +340,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAddCategoryBtn: function(e) {
             var that = this;
-            require(['views/glossary/AssignTermLayoutView'], function(AssignTermLayoutView) {
+            Promise.all([import('views/glossary/AssignTermLayoutView')]).then(function(
+                [{
+                    default: AssignTermLayoutView
+                }]
+            ) {
                 var glossary = that.glossaryCollection;
                 if (that.value && that.value.gId) {
                     var foundModel = that.glossaryCollection.find({ guid: that.value.gId });
@@ -363,7 +371,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAddTagBtn: function(e) {
             var that = this;
-            require(['views/tag/AddTagModalView'], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var tagList = [];
                 _.map(that.data.classifications, function(obj) {
                     if (obj.entityGuid === that.guid) {
@@ -429,7 +441,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTagTableLayoutView: function(options) {
             var that = this;
-            require(['views/tag/TagDetailTableLayoutView'], function(TagDetailTableLayoutView) {
+            Promise.all([import('views/tag/TagDetailTableLayoutView')]).then(function(
+                [{
+                    default: TagDetailTableLayoutView
+                }]
+            ) {
                 if (that.RTagTableLayoutView) {
                     that.RTagTableLayoutView.show(new TagDetailTableLayoutView(_.extend({}, options, {
                         "entityName": that.ui.title.text(),
@@ -442,7 +458,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         renderSearchResultLayoutView: function(options) {
             var that = this;
 
-            require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
                 var value = {
                     'tag': "PII",
                     'searchType': 'basic'
@@ -457,7 +477,11 @@ var GlossaryDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderRelationLayoutView: function(options) {
             var that = this;
-            require(['views/glossary/TermRelationAttributeLayoutView'], function(TermRelationAttributeLayoutView) {
+            Promise.all([import('views/glossary/TermRelationAttributeLayoutView')]).then(function(
+                [{
+                    default: TermRelationAttributeLayoutView
+                }]
+            ) {
                 if (that.RRelationLayoutView) {
                     that.RRelationLayoutView.show(new TermRelationAttributeLayoutView(_.extend({}, options, {
                         "entityName": that.ui.title.text(),

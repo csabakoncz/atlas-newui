@@ -87,16 +87,20 @@ var AppRouter = Backbone.Router.extend({
     bindCommonEvents: function() {
         var that = this;
         $('body').on('click', 'a.show-stat', function() {
-            require([
-                'views/site/Statistics',
-            ], function(Statistics) {
+            Promise.all([import('views/site/Statistics')]).then(function(
+                [{
+                    default: Statistics
+                }]
+            ) {
                 new Statistics(_.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj));
             });
         });
         $('body').on('click', 'li.aboutAtlas', function() {
-            require([
-                'views/site/AboutAtlas',
-            ], function(AboutAtlas) {
+            Promise.all([import('views/site/AboutAtlas')]).then(function(
+                [{
+                    default: AboutAtlas
+                }]
+            ) {
                 new AboutAtlas();
             });
         });
@@ -148,12 +152,22 @@ var AppRouter = Backbone.Router.extend({
     detailPage: function(id) {
         var that = this;
         if (id) {
-            require([
-                'views/site/Header',
-                'views/detail_page/DetailPageLayoutView',
-                'views/site/SideNavLayoutView',
-                'collection/VEntityList'
-            ], function(Header, DetailPageLayoutView, SideNavLayoutView, VEntityList) {
+            Promise.all([
+                import('views/site/Header'),
+                import('views/detail_page/DetailPageLayoutView'),
+                import('views/site/SideNavLayoutView'),
+                import('collection/VEntityList')
+            ]).then(function(
+                [{
+                    default: Header
+                }, {
+                    default: DetailPageLayoutView
+                }, {
+                    default: SideNavLayoutView
+                }, {
+                    default: VEntityList
+                }]
+            ) {
                 this.entityCollection = new VEntityList([], {});
                 var paramObj = Utils.getUrlState.getQueryParams(),
                     options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
@@ -175,11 +189,19 @@ var AppRouter = Backbone.Router.extend({
     },
     tagAttributePageLoad: function(tagName) {
         var that = this;
-        require([
-            'views/site/Header',
-            'views/site/SideNavLayoutView',
-            'views/tag/TagDetailLayoutView',
-        ], function(Header, SideNavLayoutView, TagDetailLayoutView) {
+        Promise.all([
+            import('views/site/Header'),
+            import('views/site/SideNavLayoutView'),
+            import('views/tag/TagDetailLayoutView')
+        ]).then(function(
+            [{
+                default: Header
+            }, {
+                default: SideNavLayoutView
+            }, {
+                default: TagDetailLayoutView
+            }]
+        ) {
             var paramObj = Utils.getUrlState.getQueryParams(),
                 url = Utils.getUrlState.getQueryUrl().queyParams[0],
                 options = _.extend({ 'tag': tagName, 'value': paramObj }, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
@@ -221,11 +243,19 @@ var AppRouter = Backbone.Router.extend({
     glossaryDetailPage: function(id) {
         var that = this;
         if (id) {
-            require([
-                'views/site/Header',
-                'views/glossary/GlossaryDetailLayoutView',
-                'views/site/SideNavLayoutView'
-            ], function(Header, GlossaryDetailLayoutView, SideNavLayoutView) {
+            Promise.all([
+                import('views/site/Header'),
+                import('views/glossary/GlossaryDetailLayoutView'),
+                import('views/site/SideNavLayoutView')
+            ]).then(function(
+                [{
+                    default: Header
+                }, {
+                    default: GlossaryDetailLayoutView
+                }, {
+                    default: SideNavLayoutView
+                }]
+            ) {
                 var paramObj = Utils.getUrlState.getQueryParams(),
                     options = _.extend({ 'guid': id, 'value': paramObj }, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
                 that.renderViewIfNotExists(that.getHeaderOptions(Header));
@@ -245,11 +275,19 @@ var AppRouter = Backbone.Router.extend({
     },
     searchResult: function() {
         var that = this;
-        require([
-            'views/site/Header',
-            'views/site/SideNavLayoutView',
-            'views/search/SearchDetailLayoutView'
-        ], function(Header, SideNavLayoutView, SearchDetailLayoutView) {
+        Promise.all([
+            import('views/site/Header'),
+            import('views/site/SideNavLayoutView'),
+            import('views/search/SearchDetailLayoutView')
+        ]).then(function(
+            [{
+                default: Header
+            }, {
+                default: SideNavLayoutView
+            }, {
+                default: SearchDetailLayoutView
+            }]
+        ) {
             var paramObj = Utils.getUrlState.getQueryParams(),
                 options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
             if (paramObj.tag) {
@@ -304,7 +342,19 @@ var AppRouter = Backbone.Router.extend({
     },
     administrator: function() {
         var that = this;
-        require(["views/site/Header", "views/site/SideNavLayoutView", 'views/administrator/AdministratorLayoutView'], function(Header, SideNavLayoutView, AdministratorLayoutView) {
+        Promise.all([
+            import("views/site/Header"),
+            import("views/site/SideNavLayoutView"),
+            import('views/administrator/AdministratorLayoutView')
+        ]).then(function(
+            [{
+                default: Header
+            }, {
+                default: SideNavLayoutView
+            }, {
+                default: AdministratorLayoutView
+            }]
+        ) {
             var paramObj = Utils.getUrlState.getQueryParams(),
                 options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
             that.renderViewIfNotExists(that.getHeaderOptions(Header));
@@ -327,7 +377,19 @@ var AppRouter = Backbone.Router.extend({
     },
     businessMetadataDetailPage: function(guid) {
         var that = this;
-        require(["views/site/Header", "views/site/SideNavLayoutView", "views/business_metadata/BusinessMetadataContainerLayoutView", ], function(Header, SideNavLayoutView, BusinessMetadataContainerLayoutView) {
+        Promise.all([
+            import("views/site/Header"),
+            import("views/site/SideNavLayoutView"),
+            import("views/business_metadata/BusinessMetadataContainerLayoutView")
+        ]).then(function(
+            [{
+                default: Header
+            }, {
+                default: SideNavLayoutView
+            }, {
+                default: BusinessMetadataContainerLayoutView
+            }]
+        ) {
             var paramObj = Utils.getUrlState.getQueryParams(),
                 options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
             that.renderViewIfNotExists(that.getHeaderOptions(Header));
@@ -350,11 +412,19 @@ var AppRouter = Backbone.Router.extend({
     },
     commonAction: function() {
         var that = this;
-        require([
-            'views/site/Header',
-            'views/site/SideNavLayoutView',
-            'views/search/SearchDetailLayoutView',
-        ], function(Header, SideNavLayoutView, SearchDetailLayoutView) {
+        Promise.all([
+            import('views/site/Header'),
+            import('views/site/SideNavLayoutView'),
+            import('views/search/SearchDetailLayoutView')
+        ]).then(function(
+            [{
+                default: Header
+            }, {
+                default: SideNavLayoutView
+            }, {
+                default: SearchDetailLayoutView
+            }]
+        ) {
             var paramObj = Utils.getUrlState.getQueryParams(),
                 options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
             that.renderViewIfNotExists(that.getHeaderOptions(Header));

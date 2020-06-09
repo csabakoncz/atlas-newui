@@ -358,10 +358,13 @@ var TagLayoutView = Backbone.Marionette.LayoutView.extend(
             var that = this,
                 nodeName = e.currentTarget.nodeName;
             $(e.currentTarget).attr("disabled", "true");
-            require([
-                'views/tag/CreateTagLayoutView',
-                'modules/Modal'
-            ], function(CreateTagLayoutView, Modal) {
+            Promise.all([import('views/tag/CreateTagLayoutView'), import('modules/Modal')]).then(function(
+                [{
+                    default: CreateTagLayoutView
+                }, {
+                    default: Modal
+                }]
+            ) {
                 var name = (!(nodeName == "BUTTON") ? that.query[that.viewType].tagName : null);
                 var view = new CreateTagLayoutView({ 'tagCollection': that.collection, 'selectedTag': name, 'enumDefCollection': enumDefCollection }),
                     modal = new Modal({

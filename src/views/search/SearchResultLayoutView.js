@@ -597,7 +597,11 @@ var SearchResultLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function(col) {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 // displayOrder added for column manager
                 if (that.value.uiParameters) {
                     var savedColumnOrder = _.object(that.value.uiParameters.split(',').map(function(a) {
@@ -1041,7 +1045,11 @@ var SearchResultLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         addTagModalView: function(guid, multiple) {
             var that = this;
-            require(['views/tag/AddTagModalView'], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var view = new AddTagModalView({
                     guid: guid,
                     multiple: multiple,
@@ -1113,7 +1121,11 @@ var SearchResultLayoutView = Backbone.Marionette.LayoutView.extend(
             } else if (entityGuid) {
                 associatedTerms = this.searchCollection.find({ guid: entityGuid }).get('meanings');
             }
-            require(['views/glossary/AssignTermLayoutView'], function(AssignTermLayoutView) {
+            Promise.all([import('views/glossary/AssignTermLayoutView')]).then(function(
+                [{
+                    default: AssignTermLayoutView
+                }]
+            ) {
                 var view = new AssignTermLayoutView({
                     guid: entityGuid,
                     multiple: multiple,
@@ -1206,9 +1218,11 @@ var SearchResultLayoutView = Backbone.Marionette.LayoutView.extend(
         onClickCreateEntity: function(e) {
             var that = this;
             $(e.currentTarget).blur();
-            require([
-                'views/entity/CreateEntityLayoutView'
-            ], function(CreateEntityLayoutView) {
+            Promise.all([import('views/entity/CreateEntityLayoutView')]).then(function(
+                [{
+                    default: CreateEntityLayoutView
+                }]
+            ) {
                 var view = new CreateEntityLayoutView({
                     entityDefCollection: that.entityDefCollection,
                     typeHeaders: that.typeHeaders,

@@ -102,7 +102,11 @@ var TagDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getSchemaTableColumns());
                 if (that.RTagTableLayoutView) {
                     that.RTagTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
@@ -189,7 +193,11 @@ var TagDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         addModalView: function(e) {
             var that = this;
-            require(['views/tag/AddTagModalView'], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var view = new AddTagModalView({
                     guid: that.guid,
                     modalCollection: that.collection,
@@ -231,9 +239,11 @@ var TagDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
                 tagModel = _.find(that.collectionObject.classifications, function(tag) {
                     return (tagName === tag.typeName && that.guid === tag.entityGuid);
                 });
-            require([
-                'views/tag/AddTagModalView'
-            ], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var view = new AddTagModalView({
                     'tagModel': tagModel,
                     'callback': function() {

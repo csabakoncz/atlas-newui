@@ -136,7 +136,11 @@ var SearchLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderSaveSearch: function() {
             var that = this;
-            require(['views/search/save/SaveSearchView'], function(SaveSearchView) {
+            Promise.all([import('views/search/save/SaveSearchView')]).then(function(
+                [{
+                    default: SaveSearchView
+                }]
+            ) {
                 var saveSearchBaiscCollection = new VSearchList(),
                     saveSearchAdvanceCollection = new VSearchList(),
                     saveSearchCollection = new VSearchList();
@@ -399,10 +403,13 @@ var SearchLayoutView = Backbone.Marionette.LayoutView.extend(
             });
         },
         advancedInfo: function(e) {
-            require([
-                'views/search/AdvancedSearchInfoView',
-                'modules/Modal'
-            ], function(AdvancedSearchInfoView, Modal) {
+            Promise.all([import('views/search/AdvancedSearchInfoView'), import('modules/Modal')]).then(function(
+                [{
+                    default: AdvancedSearchInfoView
+                }, {
+                    default: Modal
+                }]
+            ) {
                 var view = new AdvancedSearchInfoView();
                 var modal = new Modal({
                     title: 'Advanced Search Queries',
@@ -418,7 +425,11 @@ var SearchLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         openAttrFilter: function(filterType) {
             var that = this;
-            require(['views/search/SearchQueryView'], function(SearchQueryView) {
+            Promise.all([import('views/search/SearchQueryView')]).then(function(
+                [{
+                    default: SearchQueryView
+                }]
+            ) {
                 that.attrModal = new SearchQueryView({
                     value: that.value,
                     tag: (filterType === "tag" ? true : false),

@@ -125,7 +125,11 @@ var SearchQueryView = Backbone.Marionette.LayoutView.extend(
         bindEvents: function() {},
         renderQueryBuilder: function(obj) {
             var that = this;
-            require(['views/search/QueryBuilderView'], function(QueryBuilderView) {
+            Promise.all([import('views/search/QueryBuilderView')]).then(function(
+                [{
+                    default: QueryBuilderView
+                }]
+            ) {
                 that.RQueryBuilder.show(new QueryBuilderView(obj));
             });
         }

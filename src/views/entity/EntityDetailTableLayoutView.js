@@ -94,9 +94,11 @@ var EntityDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
         onClickEditEntity: function(e) {
             var that = this;
             $(e.currentTarget).blur();
-            require([
-                'views/entity/CreateEntityLayoutView'
-            ], function(CreateEntityLayoutView) {
+            Promise.all([import('views/entity/CreateEntityLayoutView')]).then(function(
+                [{
+                    default: CreateEntityLayoutView
+                }]
+            ) {
                 var view = new CreateEntityLayoutView({
                     guid: that.guid,
                     searchVent: that.searchVent,

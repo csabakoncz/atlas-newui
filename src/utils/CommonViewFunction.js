@@ -27,7 +27,11 @@ import Globals from 'utils/Globals';
 
 var CommonViewFunction = {};
 CommonViewFunction.deleteTag = function(options) {
-    require(['models/VTag'], function(VTag) {
+    Promise.all([import('models/VTag')]).then(function(
+        [{
+            default: VTag
+        }]
+    ) {
         if (options && options.guid && options.tagName) {
             var tagModel = new VTag(),
                 noticeRef = null,
@@ -673,11 +677,19 @@ CommonViewFunction.createEditGlossaryCategoryTerm = function(options) {
             isGlossaryView = options.isGlossaryView,
             collection = options.collection
     }
-    require([
-        'views/glossary/CreateEditCategoryTermLayoutView',
-        'views/glossary/CreateEditGlossaryLayoutView',
-        'modules/Modal'
-    ], function(CreateEditCategoryTermLayoutView, CreateEditGlossaryLayoutView, Modal) {
+    Promise.all([
+        import('views/glossary/CreateEditCategoryTermLayoutView'),
+        import('views/glossary/CreateEditGlossaryLayoutView'),
+        import('modules/Modal')
+    ]).then(function(
+        [{
+            default: CreateEditCategoryTermLayoutView
+        }, {
+            default: CreateEditGlossaryLayoutView
+        }, {
+            default: Modal
+        }]
+    ) {
         var view = null,
             title = null;
         if (isGlossaryView) {

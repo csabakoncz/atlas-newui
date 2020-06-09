@@ -96,7 +96,11 @@ var ReplicationAuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var columnCollection = Backgrid.Columns.extend({
                     sortKey: "displayOrder",
                     comparator: function(item) {

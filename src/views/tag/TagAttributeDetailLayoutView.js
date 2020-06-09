@@ -187,92 +187,95 @@ var TagAttributeDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAddTagAttributeBtn: function(e) {
             var that = this;
-            require(['views/tag/AddTagAttributeView',
-                    'modules/Modal'
-                ],
-                function(AddTagAttributeView, Modal) {
-                    var view = new AddTagAttributeView({
-                        "enumDefCollection": that.enumDefCollection
-                    });
-                    that.modal = new Modal({
-                        title: 'Add Attribute',
-                        content: view,
-                        cancelText: "Cancel",
-                        okText: 'Add',
-                        allowCancel: true,
-                        okCloses: false
-                    }).open();
-                    that.modal.$el.find('button.ok').attr("disabled", "true");
-                    view.ui.addAttributeDiv.on('keyup', '.attributeInput', function(e) {
-                        if (e.target.value.trim() == "") {
-                            that.modal.$el.find('button.ok').attr("disabled", "disabled");
-                        } else {
-                            that.modal.$el.find('button.ok').removeAttr("disabled");
-                        }
-                    });
-                    that.modal.on('ok', function() {
-                        var newAttributeList = view.collection.toJSON(),
-                            activeTagAttribute = _.extend([], that.model.get('attributeDefs')),
-                            superTypes = that.model.get('superTypes');
-
-                        _.each(superTypes, function(name) {
-                            var parentTags = that.collection.fullCollection.findWhere({ name: name });
-                            activeTagAttribute = activeTagAttribute.concat(parentTags.get('attributeDefs'));
-                        });
-
-                        var duplicateAttributeList = [],
-                            saveObj = $.extend(true, {}, that.model.toJSON());
-                        _.each(newAttributeList, function(obj) {
-                            var duplicateCheck = _.find(activeTagAttribute, function(activeTagObj) {
-                                return activeTagObj.name.toLowerCase() === obj.name.toLowerCase();
-                            });
-                            if (duplicateCheck) {
-                                duplicateAttributeList.push(obj.name);
-                            } else {
-                                saveObj.attributeDefs.push(obj);
-                            }
-                        });
-                        var notifyObj = {
-                            modal: true,
-                            confirm: {
-                                confirm: true,
-                                buttons: [{
-                                        text: 'Ok',
-                                        addClass: 'btn-atlas btn-md',
-                                        click: function(notice) {
-                                            notice.remove();
-                                        }
-                                    },
-                                    null
-                                ]
-                            }
-                        }
-                        if (saveObj && !duplicateAttributeList.length) {
-                            that.onSaveButton(saveObj, Messages.tag.addAttributeSuccessMessage);
-                        } else {
-                            if (duplicateAttributeList.length < 2) {
-                                var text = "Attribute <b>" + duplicateAttributeList.join(",") + "</b> is duplicate !"
-                            } else {
-                                if (newAttributeList.length > duplicateAttributeList.length) {
-                                    var text = "Attributes: <b>" + duplicateAttributeList.join(",") + "</b> are duplicate ! Do you want to continue with other attributes ?"
-                                    notifyObj = {
-                                        ok: function(argument) {
-                                            that.onSaveButton(saveObj, Messages.tag.addAttributeSuccessMessage);
-                                        },
-                                        cancel: function(argument) {}
-                                    }
-                                } else {
-                                    var text = "All attributes are duplicate !"
-                                }
-                            }
-                            notifyObj['text'] = text;
-                            Utils.notifyConfirm(notifyObj);
-                        }
-                    });
-                    that.modal.on('closeModal', function() {
-                        that.modal.trigger('cancel');
-                    });
+            Promise.all([import('views/tag/AddTagAttributeView'), import('modules/Modal')]).then(function(
+                [{
+                    default: AddTagAttributeView
+                }, {
+                    default: Modal
+                }]
+            ) {
+                var view = new AddTagAttributeView({
+                    "enumDefCollection": that.enumDefCollection
                 });
+                that.modal = new Modal({
+                    title: 'Add Attribute',
+                    content: view,
+                    cancelText: "Cancel",
+                    okText: 'Add',
+                    allowCancel: true,
+                    okCloses: false
+                }).open();
+                that.modal.$el.find('button.ok').attr("disabled", "true");
+                view.ui.addAttributeDiv.on('keyup', '.attributeInput', function(e) {
+                    if (e.target.value.trim() == "") {
+                        that.modal.$el.find('button.ok').attr("disabled", "disabled");
+                    } else {
+                        that.modal.$el.find('button.ok').removeAttr("disabled");
+                    }
+                });
+                that.modal.on('ok', function() {
+                    var newAttributeList = view.collection.toJSON(),
+                        activeTagAttribute = _.extend([], that.model.get('attributeDefs')),
+                        superTypes = that.model.get('superTypes');
+
+                    _.each(superTypes, function(name) {
+                        var parentTags = that.collection.fullCollection.findWhere({ name: name });
+                        activeTagAttribute = activeTagAttribute.concat(parentTags.get('attributeDefs'));
+                    });
+
+                    var duplicateAttributeList = [],
+                        saveObj = $.extend(true, {}, that.model.toJSON());
+                    _.each(newAttributeList, function(obj) {
+                        var duplicateCheck = _.find(activeTagAttribute, function(activeTagObj) {
+                            return activeTagObj.name.toLowerCase() === obj.name.toLowerCase();
+                        });
+                        if (duplicateCheck) {
+                            duplicateAttributeList.push(obj.name);
+                        } else {
+                            saveObj.attributeDefs.push(obj);
+                        }
+                    });
+                    var notifyObj = {
+                        modal: true,
+                        confirm: {
+                            confirm: true,
+                            buttons: [{
+                                    text: 'Ok',
+                                    addClass: 'btn-atlas btn-md',
+                                    click: function(notice) {
+                                        notice.remove();
+                                    }
+                                },
+                                null
+                            ]
+                        }
+                    }
+                    if (saveObj && !duplicateAttributeList.length) {
+                        that.onSaveButton(saveObj, Messages.tag.addAttributeSuccessMessage);
+                    } else {
+                        if (duplicateAttributeList.length < 2) {
+                            var text = "Attribute <b>" + duplicateAttributeList.join(",") + "</b> is duplicate !"
+                        } else {
+                            if (newAttributeList.length > duplicateAttributeList.length) {
+                                var text = "Attributes: <b>" + duplicateAttributeList.join(",") + "</b> are duplicate ! Do you want to continue with other attributes ?"
+                                notifyObj = {
+                                    ok: function(argument) {
+                                        that.onSaveButton(saveObj, Messages.tag.addAttributeSuccessMessage);
+                                    },
+                                    cancel: function(argument) {}
+                                }
+                            } else {
+                                var text = "All attributes are duplicate !"
+                            }
+                        }
+                        notifyObj['text'] = text;
+                        Utils.notifyConfirm(notifyObj);
+                    }
+                });
+                that.modal.on('closeModal', function() {
+                    that.modal.trigger('cancel');
+                });
+            });
         },
         textAreaChangeEvent: function(view) {
             if (this.model.get('description') === view.ui.description.val()) {
@@ -289,10 +292,13 @@ var TagAttributeDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         onEditButton: function(e) {
             var that = this;
             $(e.currentTarget).blur();
-            require([
-                'views/tag/CreateTagLayoutView',
-                'modules/Modal'
-            ], function(CreateTagLayoutView, Modal) {
+            Promise.all([import('views/tag/CreateTagLayoutView'), import('modules/Modal')]).then(function(
+                [{
+                    default: CreateTagLayoutView
+                }, {
+                    default: Modal
+                }]
+            ) {
                 var view = new CreateTagLayoutView({ 'tagCollection': that.collection, 'model': that.model, 'tag': that.tag, 'enumDefCollection': enumDefCollection });
                 that.modal = new Modal({
                     title: 'Edit Classification',

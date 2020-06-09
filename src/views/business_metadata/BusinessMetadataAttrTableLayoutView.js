@@ -111,7 +111,11 @@ var BusinessMetadataAttrTableLayoutView = Backbone.Marionette.LayoutView.extend(
                 });
                 this.showDetails = false;
                 that.toggleBusinessMetadataDetailsAttrView();
-                require(["views/business_metadata/CreateBusinessMetadataLayoutView"], function(CreateBusinessMetadataLayoutView) {
+                Promise.all([import("views/business_metadata/CreateBusinessMetadataLayoutView")]).then(function(
+                    [{
+                        default: CreateBusinessMetadataLayoutView
+                    }]
+                ) {
                     that.view = new CreateBusinessMetadataLayoutView({
                         onEditCallback: function() {
                             enumDefCollection.fetch({ reset: true });
@@ -146,7 +150,11 @@ var BusinessMetadataAttrTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getBusinessMetadataTableColumns());
                 that.RBusinessMetadataAttrTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
                     columns: cols

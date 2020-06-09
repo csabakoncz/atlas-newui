@@ -263,7 +263,16 @@ export default Backbone.Marionette.ItemView.extend(
         },
         onCreateUpdateEnum: function(e) {
             var that = this;
-            require(["views/business_metadata/EnumCreateUpdateItemView", "modules/Modal"], function(EnumCreateUpdateItemView, Modal) {
+            Promise.all([
+                import("views/business_metadata/EnumCreateUpdateItemView"),
+                import("modules/Modal")
+            ]).then(function(
+                [{
+                    default: EnumCreateUpdateItemView
+                }, {
+                    default: Modal
+                }]
+            ) {
                 var view = new EnumCreateUpdateItemView({
                         onUpdateEnum: function() {
                             that.ui.enumValueSelectorContainer.hide();

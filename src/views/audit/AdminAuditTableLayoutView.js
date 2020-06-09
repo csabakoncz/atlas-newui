@@ -152,7 +152,11 @@ var AdminAuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
         onClickAttrFilter: function() {
             var that = this;
             this.ui.adminRegion.show();
-            require(['views/search/QueryBuilderView'], function(QueryBuilderView) {
+            Promise.all([import('views/search/QueryBuilderView')]).then(function(
+                [{
+                    default: QueryBuilderView
+                }]
+            ) {
                 that.RQueryBuilderAdmin.show(new QueryBuilderView({ adminAttrFilters: true, searchTableFilters: that.searchTableFilters, entityDefCollection: that.entityDefCollection, enumDefCollection: that.enumDefCollection }));
             });
         },
@@ -210,7 +214,11 @@ var AdminAuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
         renderTableLayoutView: function() {
             var that = this;
             this.ui.showDefault.hide();
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getAuditTableColumns());
                 that.RAuditTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
                     columns: cols
@@ -305,9 +313,13 @@ var AdminAuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAdminEntity: function(e) {
             var that = this;
-            require([
-                'modules/Modal', 'views/audit/AuditTableLayoutView'
-            ], function(Modal, AuditTableLayoutView) {
+            Promise.all([import('modules/Modal'), import('views/audit/AuditTableLayoutView')]).then(function(
+                [{
+                    default: Modal
+                }, {
+                    default: AuditTableLayoutView
+                }]
+            ) {
                 var obj = {
                         guid: $(e.target).text(),
                     },

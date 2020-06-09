@@ -126,7 +126,11 @@ var ProfileTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getAuditTableColumns());
                 that.RProfileTableLayoutView.show(new TableLayout(_.extend({}, {
                     columns: cols,

@@ -55,12 +55,24 @@ var ProfileLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onRender: function() {
             var that = this;
-            require(["views/site/Statistics", "collection/VTagList", "utils/UrlLinks"], function(Statistics, VTagList, UrlLinks) {
+            Promise.all([
+                import("views/site/Statistics"),
+                import("collection/VTagList"),
+                import("utils/UrlLinks")
+            ]).then(function(
+                [{
+                    default: Statistics
+                }, {
+                    default: VTagList
+                }, {
+                    default: UrlLinks
+                }]
+            ) {
                 that.metricCollection = new VTagList();
                 that.metricCollection.url = UrlLinks.metricsApiUrl();
                 that.metricCollection.modelAttrName = "data";
                 that.RStatisticsView.show(new Statistics({ metricCollection: that.metricCollection, isMigrationView: true }));
-            })
+            });
         }
     });
 export default ProfileLayoutView;

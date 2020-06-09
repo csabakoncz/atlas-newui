@@ -87,13 +87,21 @@ var AdministratorLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderBusinessMetadataLayoutView: function(obj) {
             var that = this;
-            require(['views/business_metadata/BusinessMetadataTableLayoutView'], function(BusinessMetadataTableLayoutView) {
+            Promise.all([import('views/business_metadata/BusinessMetadataTableLayoutView')]).then(function(
+                [{
+                    default: BusinessMetadataTableLayoutView
+                }]
+            ) {
                 that.RBusinessMetadataTableLayoutView.show(new BusinessMetadataTableLayoutView({ businessMetadataDefCollection: that.businessMetadataDefCollection, entityDefCollection: that.entityDefCollection }));
             });
         },
         renderEnumLayoutView: function(obj) {
             var that = this;
-            require(["views/business_metadata/EnumCreateUpdateItemView"], function(EnumCreateUpdateItemView) {
+            Promise.all([import("views/business_metadata/EnumCreateUpdateItemView")]).then(function(
+                [{
+                    default: EnumCreateUpdateItemView
+                }]
+            ) {
                 var view = new EnumCreateUpdateItemView({
                     enumDefCollection: that.enumDefCollection,
                     businessMetadataDefCollection: that.businessMetadataDefCollection
@@ -103,7 +111,11 @@ var AdministratorLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderAdminLayoutView: function(obj) {
             var that = this;
-            require(["views/audit/AdminAuditTableLayoutView"], function(AdminAuditTableLayoutView) {
+            Promise.all([import("views/audit/AdminAuditTableLayoutView")]).then(function(
+                [{
+                    default: AdminAuditTableLayoutView
+                }]
+            ) {
                 var view = new AdminAuditTableLayoutView({
                     searchTableFilters: that.searchTableFilters,
                     entityDefCollection: that.entityDefCollection,

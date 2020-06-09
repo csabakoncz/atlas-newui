@@ -136,9 +136,11 @@ export default Backbone.Marionette.CompositeView.extend({
         }
     },
     callSaveModalLayoutView: function(options) {
-        require([
-            'views/search/save/SaveModalLayoutView'
-        ], function(SaveModalLayoutView) {
+        Promise.all([import('views/search/save/SaveModalLayoutView')]).then(function(
+            [{
+                default: SaveModalLayoutView
+            }]
+        ) {
             new SaveModalLayoutView(options);
         });
     },
@@ -162,9 +164,11 @@ export default Backbone.Marionette.CompositeView.extend({
     onRename: function(options) {
         if (options && options.model) {
             var that = this;
-            require([
-                'views/search/save/SaveModalLayoutView'
-            ], function(SaveModalLayoutView) {
+            Promise.all([import('views/search/save/SaveModalLayoutView')]).then(function(
+                [{
+                    default: SaveModalLayoutView
+                }]
+            ) {
                 new SaveModalLayoutView({ 'selectedModel': options.model, 'collection': that.collection, 'getValue': that.getValue, 'isBasic': that.isBasic });
             });
         }

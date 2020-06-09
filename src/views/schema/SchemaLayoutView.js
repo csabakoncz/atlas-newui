@@ -166,7 +166,11 @@ var SchemaTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var columnCollection = Backgrid.Columns.extend({}),
                     columns = new columnCollection(that.getSchemaTableColumns());
                 that.RSchemaTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
@@ -261,7 +265,11 @@ var SchemaTableLayoutView = Backbone.Marionette.LayoutView.extend(
         addTagModalView: function(guid, multiple) {
             var that = this;
             var tagList = that.schemaCollection.find({ 'guid': guid });
-            require(['views/tag/AddTagModalView'], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var view = new AddTagModalView({
                     guid: guid,
                     multiple: multiple,

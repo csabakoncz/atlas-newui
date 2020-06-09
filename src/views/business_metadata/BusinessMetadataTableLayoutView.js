@@ -156,7 +156,11 @@ var BusinessMetadataTableLayoutView = Backbone.Marionette.LayoutView.extend(
                 that.showDetails = false;
                 that.toggleBusinessMetadataDetailsAttrView();
                 that.ui.businessMetadataAttrPageOk.attr('data-action', e.currentTarget.dataset.id);
-                require(["views/business_metadata/CreateBusinessMetadataLayoutView"], function(CreateBusinessMetadataLayoutView) {
+                Promise.all([import("views/business_metadata/CreateBusinessMetadataLayoutView")]).then(function(
+                    [{
+                        default: CreateBusinessMetadataLayoutView
+                    }]
+                ) {
                     that.view = new CreateBusinessMetadataLayoutView({
                         onEditCallback: function() {
                             that.businessMetadataDefCollection.fullCollection.sort({ silent: true });
@@ -198,7 +202,11 @@ var BusinessMetadataTableLayoutView = Backbone.Marionette.LayoutView.extend(
             that.ui.businessMetadataAttrPageOk.attr('data-action', 'createBusinessMetadata');
             that.ui.businessMetadataAttrPageTitle.text("Create Business Metadata");
             that.toggleBusinessMetadataDetailsAttrView();
-            require(["views/business_metadata/CreateBusinessMetadataLayoutView"], function(CreateBusinessMetadataLayoutView) {
+            Promise.all([import("views/business_metadata/CreateBusinessMetadataLayoutView")]).then(function(
+                [{
+                    default: CreateBusinessMetadataLayoutView
+                }]
+            ) {
                 that.view = new CreateBusinessMetadataLayoutView({
                     onUpdateBusinessMetadata: function(fetch) {
                         that.showDetails = true;
@@ -218,7 +226,11 @@ var BusinessMetadataTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getBusinessMetadataTableColumns());
                 that.RBusinessMetadataTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
                     columns: cols

@@ -300,9 +300,11 @@ var Header = Marionette.LayoutView.extend({
     },
     onClickImport: function(isGlossary) {
         var that = this;
-        require([
-            'views/import/ImportLayoutView'
-        ], function(ImportLayoutView) {
+        Promise.all([import('views/import/ImportLayoutView')]).then(function(
+            [{
+                default: ImportLayoutView
+            }]
+        ) {
             var view = new ImportLayoutView({
                 callback: function() {
                     if (that.options.importVent) {

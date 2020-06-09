@@ -75,7 +75,11 @@ var ProfileLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderSearchResultLayoutView: function() {
             var that = this;
-            require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
                 var value = _.extend({}, that.value, {
                     'guid': that.guid,
                     'searchType': 'relationship',
@@ -95,13 +99,21 @@ var ProfileLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderProfileTableLayoutView: function(tagGuid) {
             var that = this;
-            require(['views/profile/ProfileTableLayoutView'], function(ProfileTableLayoutView) {
+            Promise.all([import('views/profile/ProfileTableLayoutView')]).then(function(
+                [{
+                    default: ProfileTableLayoutView
+                }]
+            ) {
                 that.RProfileTableOrColumnLayoutView.show(new ProfileTableLayoutView(that.options));
             });
         },
         renderProfileColumnLayoutView: function(tagGuid) {
             var that = this;
-            require(['views/profile/ProfileColumnLayoutView'], function(ProfileColumnLayoutView) {
+            Promise.all([import('views/profile/ProfileColumnLayoutView')]).then(function(
+                [{
+                    default: ProfileColumnLayoutView
+                }]
+            ) {
                 that.RProfileTableOrColumnLayoutView.show(new ProfileColumnLayoutView(that.options));
             });
         },

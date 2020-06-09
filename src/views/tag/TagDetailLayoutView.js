@@ -53,7 +53,11 @@ var TagDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderSearchResultLayoutView: function() {
             var that = this;
-            require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
                 var value = {
                     'tag': that.tag,
                     'searchType': 'basic'
@@ -74,7 +78,11 @@ var TagDetailLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTagAttributeCompositeView: function() {
             var that = this;
-            require(['views/tag/TagAttributeDetailLayoutView'], function(TagAttributeDetailLayoutView) {
+            Promise.all([import('views/tag/TagAttributeDetailLayoutView')]).then(function(
+                [{
+                    default: TagAttributeDetailLayoutView
+                }]
+            ) {
                 if (that.RTagAttributeDetailLayoutView) {
                     that.RTagAttributeDetailLayoutView.show(new TagAttributeDetailLayoutView({
                         tag: that.tag,

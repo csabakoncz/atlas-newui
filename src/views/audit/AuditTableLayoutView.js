@@ -163,7 +163,11 @@ var AuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderTableLayoutView: function() {
             var that = this;
-            require(['utils/TableLayout'], function(TableLayout) {
+            Promise.all([import('utils/TableLayout')]).then(function(
+                [{
+                    default: TableLayout
+                }]
+            ) {
                 var cols = new Backgrid.Columns(that.getAuditTableColumns());
                 that.RAuditTableLayoutView.show(new TableLayout(_.extend({}, that.commonTableOptions, {
                     columns: cols
@@ -187,9 +191,11 @@ var AuditTableLayoutView = Backbone.Marionette.LayoutView.extend(
                     accordion: false,
                     expand: function(el, model) {
                         el.attr('colspan', '4');
-                        require([
-                            'views/audit/CreateAuditTableLayoutView',
-                        ], function(CreateAuditTableLayoutView) {
+                        Promise.all([import('views/audit/CreateAuditTableLayoutView')]).then(function(
+                            [{
+                                default: CreateAuditTableLayoutView
+                            }]
+                        ) {
 
                             that.action = model.get('action');
                             // $(el.target).attr('disabled', true);

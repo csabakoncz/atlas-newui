@@ -459,7 +459,11 @@ var DetailPageLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickAddTagBtn: function(e) {
             var that = this;
-            require(['views/tag/AddTagModalView'], function(AddTagModalView) {
+            Promise.all([import('views/tag/AddTagModalView')]).then(function(
+                [{
+                    default: AddTagModalView
+                }]
+            ) {
                 var tagList = [];
                 _.map(that.entityObject.entity.classifications, function(obj) {
                     if (obj.entityGuid === that.id) {
@@ -493,7 +497,11 @@ var DetailPageLayoutView = Backbone.Marionette.LayoutView.extend(
             if (entityObj && entityObj.relationshipAttributes && entityObj.relationshipAttributes.meanings) {
                 associatedTerms = entityObj.relationshipAttributes.meanings;
             }
-            require(['views/glossary/AssignTermLayoutView'], function(AssignTermLayoutView) {
+            Promise.all([import('views/glossary/AssignTermLayoutView')]).then(function(
+                [{
+                    default: AssignTermLayoutView
+                }]
+            ) {
                 var view = new AssignTermLayoutView({
                     guid: that.id,
                     callback: function() {
@@ -511,67 +519,111 @@ var DetailPageLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderEntityDetailTableLayoutView: function(obj) {
             var that = this;
-            require(['views/entity/EntityDetailTableLayoutView'], function(EntityDetailTableLayoutView) {
+            Promise.all([import('views/entity/EntityDetailTableLayoutView')]).then(function(
+                [{
+                    default: EntityDetailTableLayoutView
+                }]
+            ) {
                 that.REntityDetailTableLayoutView.show(new EntityDetailTableLayoutView(obj));
             });
         },
         renderEntityUserDefineView: function(obj) {
             var that = this;
-            require(['views/entity/EntityUserDefineView'], function(EntityUserDefineView) {
+            Promise.all([import('views/entity/EntityUserDefineView')]).then(function(
+                [{
+                    default: EntityUserDefineView
+                }]
+            ) {
                 that.REntityUserDefineView.show(new EntityUserDefineView(obj));
             });
         },
         renderEntityLabelDefineView: function(obj) {
             var that = this;
-            require(['views/entity/EntityLabelDefineView'], function(EntityLabelDefineView) {
+            Promise.all([import('views/entity/EntityLabelDefineView')]).then(function(
+                [{
+                    default: EntityLabelDefineView
+                }]
+            ) {
                 that.REntityLabelDefineView.show(new EntityLabelDefineView(obj));
             });
         },
         renderEntityBusinessMetadataView: function(obj) {
             var that = this;
-            require(['views/entity/EntityBusinessMetaDataView'], function(EntityBusinessMetaDataView) {
+            Promise.all([import('views/entity/EntityBusinessMetaDataView')]).then(function(
+                [{
+                    default: EntityBusinessMetaDataView
+                }]
+            ) {
                 that.REntityBusinessMetadataView.show(new EntityBusinessMetaDataView(obj));
             });
         },
         renderTagTableLayoutView: function(obj) {
             var that = this;
-            require(['views/tag/TagDetailTableLayoutView'], function(TagDetailTableLayoutView) {
+            Promise.all([import('views/tag/TagDetailTableLayoutView')]).then(function(
+                [{
+                    default: TagDetailTableLayoutView
+                }]
+            ) {
                 that.RTagTableLayoutView.show(new TagDetailTableLayoutView(obj));
             });
         },
         renderLineageLayoutView: function(obj) {
             var that = this;
-            require(['views/graph/LineageLayoutView'], function(LineageLayoutView) {
+            Promise.all([import('views/graph/LineageLayoutView')]).then(function(
+                [{
+                    default: LineageLayoutView
+                }]
+            ) {
                 that.RLineageLayoutView.show(new LineageLayoutView(obj));
             });
         },
         renderRelationshipLayoutView: function(obj) {
             var that = this;
-            require(['views/graph/RelationshipLayoutView'], function(RelationshipLayoutView) {
+            Promise.all([import('views/graph/RelationshipLayoutView')]).then(function(
+                [{
+                    default: RelationshipLayoutView
+                }]
+            ) {
                 that.RRelationshipLayoutView.show(new RelationshipLayoutView(obj));
             });
         },
         renderSchemaLayoutView: function(obj) {
             var that = this;
-            require(['views/schema/SchemaLayoutView'], function(SchemaLayoutView) {
+            Promise.all([import('views/schema/SchemaLayoutView')]).then(function(
+                [{
+                    default: SchemaLayoutView
+                }]
+            ) {
                 that.RSchemaTableLayoutView.show(new SchemaLayoutView(obj));
             });
         },
         renderAuditTableLayoutView: function(obj) {
             var that = this;
-            require(['views/audit/AuditTableLayoutView'], function(AuditTableLayoutView) {
+            Promise.all([import('views/audit/AuditTableLayoutView')]).then(function(
+                [{
+                    default: AuditTableLayoutView
+                }]
+            ) {
                 that.RAuditTableLayoutView.show(new AuditTableLayoutView(obj));
             });
         },
         renderReplicationAuditTableLayoutView: function(obj) {
             var that = this;
-            require(['views/audit/ReplicationAuditTableLayoutView'], function(ReplicationAuditTableLayoutView) {
+            Promise.all([import('views/audit/ReplicationAuditTableLayoutView')]).then(function(
+                [{
+                    default: ReplicationAuditTableLayoutView
+                }]
+            ) {
                 that.RReplicationAuditTableLayoutView.show(new ReplicationAuditTableLayoutView(obj));
             });
         },
         renderProfileLayoutView: function(obj) {
             var that = this;
-            require(['views/profile/ProfileLayoutView'], function(ProfileLayoutView) {
+            Promise.all([import('views/profile/ProfileLayoutView')]).then(function(
+                [{
+                    default: ProfileLayoutView
+                }]
+            ) {
                 that.RProfileLayoutView.show(new ProfileLayoutView(obj));
             });
         }

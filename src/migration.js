@@ -115,11 +115,13 @@ require.config({
     'enforceDefine': false
 });
 
-require([
-    'marionette',
-    'utils/Helper',
-    'bootstrap'
-], function(Marionette, Helper) {
+Promise.all([import('marionette'), import('utils/Helper'), import('bootstrap')]).then(function(
+    [{
+        default: Marionette
+    }, {
+        default: Helper
+    }]
+) {
     var that = this;
     var App = new Marionette.Application();
 
@@ -147,7 +149,11 @@ require([
         preRouteExecute: function() {},
         postRouteExecute: function(name, args) {},
         defaultAction: function() {
-            require(["views/migration/MigrationView"], function(MigrationView) {
+            Promise.all([import("views/migration/MigrationView")]).then(function(
+                [{
+                    default: MigrationView
+                }]
+            ) {
                 App.rContent.show(new MigrationView());
             });
         }

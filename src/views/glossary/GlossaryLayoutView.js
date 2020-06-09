@@ -775,9 +775,11 @@ var GlossaryLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         onClickImportGlossary: function() {
             var that = this;
-            require([
-                'views/import/ImportLayoutView'
-            ], function(ImportLayoutView) {
+            Promise.all([import('views/import/ImportLayoutView')]).then(function(
+                [{
+                    default: ImportLayoutView
+                }]
+            ) {
                 var view = new ImportLayoutView({
                     callback: function() {
                         that.getGlossary();

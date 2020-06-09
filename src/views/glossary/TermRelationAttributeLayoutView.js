@@ -176,7 +176,11 @@ var TermRelationAttributeLayoutView = Backbone.Marionette.LayoutView.extend(
         onAddTermRelation: function(e) {
             var that = this,
                 attributename = $(e.currentTarget).data('attributename');
-            require(['views/glossary/AssignTermLayoutView'], function(AssignTermLayoutView) {
+            Promise.all([import('views/glossary/AssignTermLayoutView')]).then(function(
+                [{
+                    default: AssignTermLayoutView
+                }]
+            ) {
                 var view = new AssignTermLayoutView({
                     "isAttributeRelationView": true,
                     "termData": that.data,

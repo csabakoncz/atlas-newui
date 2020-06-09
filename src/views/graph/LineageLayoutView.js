@@ -720,7 +720,11 @@ var LineageLayoutView = Backbone.Marionette.LayoutView.extend(
                 var data = { obj: _.find(that.lineageData.relations, { "fromEntityId": d.v, "toEntityId": d.w }) };
                 if (data.obj) {
                     var relationshipId = data.obj.relationshipId;
-                    require(['views/graph/PropagationPropertyModal'], function(PropagationPropertyModal) {
+                    Promise.all([import('views/graph/PropagationPropertyModal')]).then(function(
+                        [{
+                            default: PropagationPropertyModal
+                        }]
+                    ) {
                         var view = new PropagationPropertyModal({
                             edgeInfo: data,
                             relationshipId: relationshipId,

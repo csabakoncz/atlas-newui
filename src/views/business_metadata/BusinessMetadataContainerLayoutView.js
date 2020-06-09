@@ -56,7 +56,11 @@ var BusinessMetadataContainerLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderBusinessMetadataDetailLayoutView: function() {
             var that = this;
-            require(["views/business_metadata/BusinessMetadataDetailLayoutView"], function(BusinessMetadataDetailLayoutView) {
+            Promise.all([import("views/business_metadata/BusinessMetadataDetailLayoutView")]).then(function(
+                [{
+                    default: BusinessMetadataDetailLayoutView
+                }]
+            ) {
                 if (that.isDestroyed) {
                     return;
                 }
@@ -71,7 +75,11 @@ var BusinessMetadataContainerLayoutView = Backbone.Marionette.LayoutView.extend(
         },
         renderBusinessMetadataAttrLayoutView: function() {
             var that = this;
-            require(["views/business_metadata/BusinessMetadataAttrTableLayoutView"], function(BusinessMetadataAttrTableLayoutView) {
+            Promise.all([import("views/business_metadata/BusinessMetadataAttrTableLayoutView")]).then(function(
+                [{
+                    default: BusinessMetadataAttrTableLayoutView
+                }]
+            ) {
                 if (that.isDestroyed) {
                     return;
                 }

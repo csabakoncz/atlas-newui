@@ -88,7 +88,11 @@ var SideNavLayoutView = Marionette.LayoutView.extend({
     },
     renderTagLayoutView: function() {
         var that = this;
-        require(['views/tag/TagLayoutView'], function(TagLayoutView) {
+        Promise.all([import('views/tag/TagLayoutView')]).then(function(
+            [{
+                default: TagLayoutView
+            }]
+        ) {
             that.RTagLayoutView.show(new TagLayoutView(
                 _.extend(that.options, {
                     "collection": that.options.classificationDefCollection
@@ -98,13 +102,21 @@ var SideNavLayoutView = Marionette.LayoutView.extend({
     },
     renderSearchLayoutView: function() {
         var that = this;
-        require(['views/search/SearchLayoutView'], function(SearchLayoutView) {
+        Promise.all([import('views/search/SearchLayoutView')]).then(function(
+            [{
+                default: SearchLayoutView
+            }]
+        ) {
             that.RSearchLayoutView.show(new SearchLayoutView(that.options));
         });
     },
     renderGlossaryLayoutView: function() {
         var that = this;
-        require(['views/glossary/GlossaryLayoutView'], function(GlossaryLayoutView) {
+        Promise.all([import('views/glossary/GlossaryLayoutView')]).then(function(
+            [{
+                default: GlossaryLayoutView
+            }]
+        ) {
             that.RGlossaryLayoutView.show(new GlossaryLayoutView(that.options));
         });
     },

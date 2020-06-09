@@ -67,7 +67,11 @@ export default Backbone.Marionette.LayoutView.extend({
     onRender: function() {},
     renderEntityUserDefinedItems: function() {
         var that = this;
-        require(['views/entity/EntityUserDefineItemView'], function(EntityUserDefineItemView) {
+        Promise.all([import('views/entity/EntityUserDefineItemView')]).then(function(
+            [{
+                default: EntityUserDefineItemView
+            }]
+        ) {
             that.itemView = new EntityUserDefineItemView({ items: that.customAttibutes, updateButtonState: that.updateButtonState.bind(that) });
             that.REntityUserDefinedItemView.show(that.itemView);
         });
