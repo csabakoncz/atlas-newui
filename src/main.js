@@ -30,36 +30,39 @@ import 'utils/Overrides';
 import 'bootstrap';
 import 'd3';
 import 'select2';
-var that = this;
-this.asyncFetchCounter = 7 + (Enums.addOnEntities.length + 1);
+var that = {};
+that.asyncFetchCounter = 7 + (Enums.addOnEntities.length + 1);
 // entity
-this.entityDefCollection = new VEntityList();
-this.entityDefCollection.url = UrlLinks.entitiesDefApiUrl();
+that.entityDefCollection = new VEntityList();
+that.entityDefCollection.url = UrlLinks.entitiesDefApiUrl();
 // typeHeaders
-this.typeHeaders = new VTagList();
-this.typeHeaders.url = UrlLinks.typesApiUrl();
+that.typeHeaders = new VTagList();
+that.typeHeaders.url = UrlLinks.typesApiUrl();
 // enum
-this.enumDefCollection = new VTagList();
-this.enumDefCollection.url = UrlLinks.enumDefApiUrl();
-this.enumDefCollection.modelAttrName = "enumDefs";
+that.enumDefCollection = new VTagList();
+// used by TagLayoutView:
+window.enumDefCollection = that.enumDefCollection
+
+that.enumDefCollection.url = UrlLinks.enumDefApiUrl();
+that.enumDefCollection.modelAttrName = "enumDefs";
 // classfication
-this.classificationDefCollection = new VTagList();
+that.classificationDefCollection = new VTagList();
 // metric
-this.metricCollection = new VTagList();
-this.metricCollection.url = UrlLinks.metricsApiUrl();
-this.metricCollection.modelAttrName = "data";
+that.metricCollection = new VTagList();
+that.metricCollection.url = UrlLinks.metricsApiUrl();
+that.metricCollection.modelAttrName = "data";
 // businessMetadata
-this.businessMetadataDefCollection = new VEntityList();
-this.businessMetadataDefCollection.url = UrlLinks.businessMetadataDefApiUrl();
-this.businessMetadataDefCollection.modelAttrName = "businessMetadataDefs";
+that.businessMetadataDefCollection = new VEntityList();
+that.businessMetadataDefCollection.url = UrlLinks.businessMetadataDefApiUrl();
+that.businessMetadataDefCollection.modelAttrName = "businessMetadataDefs";
 
 App.appRouter = new Router({
-    entityDefCollection: this.entityDefCollection,
-    typeHeaders: this.typeHeaders,
-    enumDefCollection: this.enumDefCollection,
-    classificationDefCollection: this.classificationDefCollection,
-    metricCollection: this.metricCollection,
-    businessMetadataDefCollection: this.businessMetadataDefCollection
+    entityDefCollection: that.entityDefCollection,
+    typeHeaders: that.typeHeaders,
+    enumDefCollection: that.enumDefCollection,
+    classificationDefCollection: that.classificationDefCollection,
+    metricCollection: that.metricCollection,
+    businessMetadataDefCollection: that.businessMetadataDefCollection
 });
 
 var startApp = function() {
@@ -99,7 +102,7 @@ CommonViewFunction.userDataFetch({
         startApp();
     }
 });
-this.entityDefCollection.fetch({
+that.entityDefCollection.fetch({
     complete: function() {
         that.entityDefCollection.fullCollection.comparator = function(model) {
             return model.get('name').toLowerCase();
@@ -109,7 +112,7 @@ this.entityDefCollection.fetch({
         startApp();
     }
 });
-this.typeHeaders.fetch({
+that.typeHeaders.fetch({
     complete: function() {
         that.typeHeaders.fullCollection.comparator = function(model) {
             return model.get('name').toLowerCase();
@@ -119,7 +122,7 @@ this.typeHeaders.fetch({
         startApp();
     }
 });
-this.enumDefCollection.fetch({
+that.enumDefCollection.fetch({
     complete: function() {
         that.enumDefCollection.fullCollection.comparator = function(model) {
             return model.get('name').toLowerCase();
@@ -129,7 +132,7 @@ this.enumDefCollection.fetch({
         startApp();
     }
 });
-this.classificationDefCollection.fetch({
+that.classificationDefCollection.fetch({
     complete: function() {
         that.classificationDefCollection.fullCollection.comparator = function(model) {
             return model.get('name').toLowerCase();
@@ -140,14 +143,14 @@ this.classificationDefCollection.fetch({
     }
 });
 
-this.metricCollection.fetch({
+that.metricCollection.fetch({
     complete: function() {
         --that.asyncFetchCounter;
         startApp();
     }
 });
 
-this.businessMetadataDefCollection.fetch({
+that.businessMetadataDefCollection.fetch({
     complete: function() {
         that.businessMetadataDefCollection.fullCollection.comparator = function(model) {
             return model.get('name').toLowerCase();

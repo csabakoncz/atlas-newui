@@ -168,7 +168,7 @@ var AppRouter = Backbone.Router.extend({
                     default: VEntityList
                 }]
             ) {
-                this.entityCollection = new VEntityList([], {});
+                const entityCollection = new VEntityList([], {});
                 var paramObj = Utils.getUrlState.getQueryParams(),
                     options = _.extend({}, that.preFetchedCollectionLists, that.sharedObj, that.ventObj);
                 that.renderViewIfNotExists(that.getHeaderOptions(Header));
@@ -181,9 +181,9 @@ var AppRouter = Backbone.Router.extend({
                         return new SideNavLayoutView(options);
                     }
                 });
-                App.rNContent.show(new DetailPageLayoutView(_.extend({ 'collection': this.entityCollection, 'id': id, 'value': paramObj }, options)));
-                this.entityCollection.url = UrlLinks.entitiesApiUrl({ guid: id, minExtInfo: true });
-                this.entityCollection.fetch({ reset: true });
+                App.rNContent.show(new DetailPageLayoutView(_.extend({ 'collection': entityCollection, 'id': id, 'value': paramObj }, options)));
+                entityCollection.url = UrlLinks.entitiesApiUrl({ guid: id, minExtInfo: true });
+                entityCollection.fetch({ reset: true });
             });
         }
     },
