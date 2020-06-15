@@ -16,53 +16,51 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/glossary/CreateEditGlossaryLayoutView_tmpl',
-    'utils/Utils',
-    'utils/UrlLinks'
-], function(require, Backbone, CreateEditGlossaryLayoutViewTmpl, Utils, UrlLinks) {
+import Backbone from 'backbone';
 
-    var CreateEditGlossaryLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends CreateEditGlossaryLayoutView */
-        {
-            _viewName: 'CreateEditGlossaryLayoutView',
+import CreateEditGlossaryLayoutViewTmpl from 'hbs!tmpl/glossary/CreateEditGlossaryLayoutView_tmpl';
+import Utils from 'utils/Utils';
+import UrlLinks from 'utils/UrlLinks';
 
-            template: CreateEditGlossaryLayoutViewTmpl,
+var CreateEditGlossaryLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends CreateEditGlossaryLayoutView */
+    {
+        _viewName: 'CreateEditGlossaryLayoutView',
 
-            templateHelpers: function() {
-                return {
-                    create: this.create
-                };
-            },
+        template: CreateEditGlossaryLayoutViewTmpl,
 
-            /** Layout sub regions */
-            regions: {},
+        templateHelpers: function() {
+            return {
+                create: this.create
+            };
+        },
 
-            /** ui selector cache */
-            ui: {
-                "name": "[data-id='name']",
-                "shortDescription": "[data-id='shortDescription']",
-                "longDescription": "[data-id='longDescription']",
-                "glossaryForm": "[data-id='glossaryForm']"
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                return events;
-            },
-            /**
-             * intialize a new CreateEditGlossaryLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'glossaryCollection', 'model'));
-                if (!this.model) {
-                    this.create = true;
-                }
-            },
-            bindEvents: function() {},
-            onRender: function() {}
-        });
-    return CreateEditGlossaryLayoutView;
-});
+        /** Layout sub regions */
+        regions: {},
+
+        /** ui selector cache */
+        ui: {
+            "name": "[data-id='name']",
+            "shortDescription": "[data-id='shortDescription']",
+            "longDescription": "[data-id='longDescription']",
+            "glossaryForm": "[data-id='glossaryForm']"
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            return events;
+        },
+        /**
+         * intialize a new CreateEditGlossaryLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'glossaryCollection', 'model'));
+            if (!this.model) {
+                this.create = true;
+            }
+        },
+        bindEvents: function() {},
+        onRender: function() {}
+    });
+export default CreateEditGlossaryLayoutView;

@@ -16,128 +16,126 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'utils/Utils',
-    'utils/CommonViewFunction',
-    'backbone.paginator'
-], function(require, Globals, Utils, CommonViewFunction) {
-    'use strict';
+import Globals from 'utils/Globals';
 
-    var BaseCollection = Backbone.PageableCollection.extend(
-        /** @lends BaseCollection.prototype */
-        {
-            /**
-             * BaseCollection's initialize function
-             * @augments Backbone.PageableCollection
-             * @constructs
-             */
+import Utils from 'utils/Utils';
+import CommonViewFunction from 'utils/CommonViewFunction';
+import 'backbone.paginator';
+'use strict';
 
-            initialize: function() {
-                this.sort_key = 'id';
-            },
-            comparator: function(key, value) {
-                key = key.get(this.sort_key);
-                value = value.get(this.sort_key);
-                return key > value ? 1 : key < value ? -1 : 0;
-            },
-            sortByKey: function(sortKey) {
-                this.sort_key = sortKey;
-                this.sort();
-            },
-            /**
-             * state required for the PageableCollection
-             */
-            state: {
-                firstPage: 0,
-                pageSize: Globals.settings.PAGE_SIZE
-            },
-            mode: 'client',
-            /**
-             * override the parseRecords of PageableCollection for our use
-             */
-            parseRecords: function(resp, options) {
-                this.responseData = {
-                    dataType: resp.dataType,
-                    query: resp.query,
-                    queryType: resp.queryType,
-                    requestId: resp.requestId
-                };
-                try {
-                    if (!this.modelAttrName) {
-                        throw new Error("this.modelAttrName not defined for " + this);
-                    }
-                    return resp[this.modelAttrName];
-                } catch (e) {
-                    console.log(e);
-                }
-            },
+var BaseCollection = Backbone.PageableCollection.extend(
+    /** @lends BaseCollection.prototype */
+    {
+        /**
+         * BaseCollection's initialize function
+         * @augments Backbone.PageableCollection
+         * @constructs
+         */
 
-            ////////////////////////////////////////////////////////////
-            // Overriding backbone-pageable page handlers methods   //
-            ////////////////////////////////////////////////////////////
-            getFirstPage: function(options) {
-                return this.getPage('first', _.extend({
-                    reset: true
-                }, options));
-            },
-
-            getPreviousPage: function(options) {
-                return this.getPage("prev", _.extend({
-                    reset: true
-                }, options));
-            },
-
-            getNextPage: function(options) {
-                return this.getPage("next", _.extend({
-                    reset: true
-                }, options));
-            },
-
-            getLastPage: function(options) {
-                return this.getPage("last", _.extend({
-                    reset: true
-                }, options));
-            },
-            hasPrevious: function(options) {
-                return this.hasPreviousPage();
-            },
-            hasNext: function(options) {
-                return this.hasNextPage();
-            }
-            /////////////////////////////
-            // End overriding methods //
-            /////////////////////////////
-
+        initialize: function() {
+            this.sort_key = 'id';
         },
-        /** BaseCollection's Static Attributes */
-        {
-            // Static functions
-            getTableCols: function(cols, collection, defaultSortDirection) {
-                var retCols = _.map(cols, function(v, k, l) {
-                    var defaults = collection.constructor.tableCols[k];
-                    if (!defaults) {
-                        //console.log("Error!! " + k + " not found in collection: " , collection);
-                        defaults = {};
-                    }
-                    return _.extend({
-                        'name': k,
-                        direction: defaultSortDirection ? defaultSortDirection : null,
-                    }, defaults, v);
-                });
-                return retCols;
-            },
-            nonCrudOperation: function(url, requestMethod, options) {
-                var that = this;
-                options['beforeSend'] = CommonViewFunction.addRestCsrfCustomHeader;
-                if (options.data && typeof options.data === "object") {
-                    options.data = JSON.stringify(options.data);
+        comparator: function(key, value) {
+            key = key.get(this.sort_key);
+            value = value.get(this.sort_key);
+            return key > value ? 1 : key < value ? -1 : 0;
+        },
+        sortByKey: function(sortKey) {
+            this.sort_key = sortKey;
+            this.sort();
+        },
+        /**
+         * state required for the PageableCollection
+         */
+        state: {
+            firstPage: 0,
+            pageSize: Globals.settings.PAGE_SIZE
+        },
+        mode: 'client',
+        /**
+         * override the parseRecords of PageableCollection for our use
+         */
+        parseRecords: function(resp, options) {
+            this.responseData = {
+                dataType: resp.dataType,
+                query: resp.query,
+                queryType: resp.queryType,
+                requestId: resp.requestId
+            };
+            try {
+                if (!this.modelAttrName) {
+                    throw new Error("this.modelAttrName not defined for " + this);
                 }
-                return Backbone.sync.call(this, null, this, _.extend({
-                    url: url,
-                    type: requestMethod
-                }, options));
+                return resp[this.modelAttrName];
+            } catch (e) {
+                console.log(e);
             }
-        });
-    return BaseCollection;
-});
+        },
+
+        ////////////////////////////////////////////////////////////
+        // Overriding backbone-pageable page handlers methods   //
+        ////////////////////////////////////////////////////////////
+        getFirstPage: function(options) {
+            return this.getPage('first', _.extend({
+                reset: true
+            }, options));
+        },
+
+        getPreviousPage: function(options) {
+            return this.getPage("prev", _.extend({
+                reset: true
+            }, options));
+        },
+
+        getNextPage: function(options) {
+            return this.getPage("next", _.extend({
+                reset: true
+            }, options));
+        },
+
+        getLastPage: function(options) {
+            return this.getPage("last", _.extend({
+                reset: true
+            }, options));
+        },
+        hasPrevious: function(options) {
+            return this.hasPreviousPage();
+        },
+        hasNext: function(options) {
+            return this.hasNextPage();
+        }
+        /////////////////////////////
+        // End overriding methods //
+        /////////////////////////////
+
+    },
+    /** BaseCollection's Static Attributes */
+    {
+        // Static functions
+        getTableCols: function(cols, collection, defaultSortDirection) {
+            var retCols = _.map(cols, function(v, k, l) {
+                var defaults = collection.constructor.tableCols[k];
+                if (!defaults) {
+                    //console.log("Error!! " + k + " not found in collection: " , collection);
+                    defaults = {};
+                }
+                return _.extend({
+                    'name': k,
+                    direction: defaultSortDirection ? defaultSortDirection : null,
+                }, defaults, v);
+            });
+            return retCols;
+        },
+        nonCrudOperation: function(url, requestMethod, options) {
+            var that = this;
+            options['beforeSend'] = CommonViewFunction.addRestCsrfCustomHeader;
+            if (options.data && typeof options.data === "object") {
+                options.data = JSON.stringify(options.data);
+            }
+            return Backbone.sync.call(this, null, this, _.extend({
+                url: url,
+                type: requestMethod
+            }, options));
+        }
+    });
+export default BaseCollection;

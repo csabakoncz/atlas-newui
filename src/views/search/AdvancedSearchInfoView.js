@@ -16,46 +16,44 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/search/AdvancedSearchInfo_tmpl',
-], function(require, Backbone, AdvancedSearchInfoTmpl) {
+import Backbone from 'backbone';
 
-    var AdvancedSearchInfoView = Backbone.Marionette.LayoutView.extend(
-        /** @lends AdvancedSearchInfoView */
-        {
-            _viewName: 'AdvancedSearchInfoView',
+import AdvancedSearchInfoTmpl from 'hbs!tmpl/search/AdvancedSearchInfo_tmpl';
 
-            template: AdvancedSearchInfoTmpl,
+var AdvancedSearchInfoView = Backbone.Marionette.LayoutView.extend(
+    /** @lends AdvancedSearchInfoView */
+    {
+        _viewName: 'AdvancedSearchInfoView',
 
+        template: AdvancedSearchInfoTmpl,
 
 
-            /** Layout sub regions */
-            regions: {},
+
+        /** Layout sub regions */
+        regions: {},
 
 
-            /** ui selector cache */
-            ui: {
+        /** ui selector cache */
+        ui: {
 
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                return events;
-            },
-            /**
-             * intialize a new AdvancedSearchInfoView Layout
-             * @constructs
-             */
-            initialize: function(options) {
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            return events;
+        },
+        /**
+         * intialize a new AdvancedSearchInfoView Layout
+         * @constructs
+         */
+        initialize: function(options) {
 
-            },
-            bindEvents: function() {},
-            onRender: function() {
+        },
+        bindEvents: function() {},
+        onRender: function() {
 
-            },
+        },
 
 
-        });
-    return AdvancedSearchInfoView;
-});
+    });
+export default AdvancedSearchInfoView;

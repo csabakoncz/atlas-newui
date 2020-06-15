@@ -16,75 +16,81 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/tag/TagDetailLayoutView_tmpl',
-], function(require, Backbone, TagDetailLayoutView_tmpl) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var TagDetailLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends TagDetailLayoutView */
-        {
-            _viewName: 'TagDetailLayoutView',
+import TagDetailLayoutView_tmpl from 'hbs!tmpl/tag/TagDetailLayoutView_tmpl';
+'use strict';
 
-            template: TagDetailLayoutView_tmpl,
+var TagDetailLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends TagDetailLayoutView */
+    {
+        _viewName: 'TagDetailLayoutView',
 
-            /** Layout sub regions */
-            regions: {
-                RSearchResultLayoutView: "#r_searchResultLayoutView",
-                RTagAttributeDetailLayoutView: "#r_TagAttributeDetailLayoutView"
-            },
+        template: TagDetailLayoutView_tmpl,
 
-            /** ui selector cache */
-            ui: {},
-            /** ui events hash */
-            events: function() {},
-            /**
-             * intialize a new TagDetailLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'tag', 'value', 'glossaryCollection', 'classificationDefCollection', 'entityDefCollection', 'typeHeaders', 'enumDefCollection'));
-                this.collection = this.classificationDefCollection;
-            },
-            bindEvents: function() {},
-            onRender: function() {
-                this.renderSearchResultLayoutView();
-                this.renderTagAttributeCompositeView();
-            },
-            renderSearchResultLayoutView: function() {
-                var that = this;
-                require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
-                    var value = {
-                        'tag': that.tag,
-                        'searchType': 'basic'
-                    };
-                    if (that.RSearchResultLayoutView) {
-                        that.RSearchResultLayoutView.show(new SearchResultLayoutView({
-                            value: _.extend({}, that.value, value),
-                            entityDefCollection: that.entityDefCollection,
-                            typeHeaders: that.typeHeaders,
-                            tagCollection: that.collection,
-                            enumDefCollection: that.enumDefCollection,
-                            classificationDefCollection: that.classificationDefCollection,
-                            glossaryCollection: that.glossaryCollection,
-                            fromView: "classification"
-                        }));
-                    }
-                });
-            },
-            renderTagAttributeCompositeView: function() {
-                var that = this;
-                require(['views/tag/TagAttributeDetailLayoutView'], function(TagAttributeDetailLayoutView) {
-                    if (that.RTagAttributeDetailLayoutView) {
-                        that.RTagAttributeDetailLayoutView.show(new TagAttributeDetailLayoutView({
-                            tag: that.tag,
-                            collection: that.collection,
-                            enumDefCollection: that.enumDefCollection
-                        }));
-                    }
-                });
-            }
-        });
-    return TagDetailLayoutView;
-});
+        /** Layout sub regions */
+        regions: {
+            RSearchResultLayoutView: "#r_searchResultLayoutView",
+            RTagAttributeDetailLayoutView: "#r_TagAttributeDetailLayoutView"
+        },
+
+        /** ui selector cache */
+        ui: {},
+        /** ui events hash */
+        events: function() {},
+        /**
+         * intialize a new TagDetailLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'tag', 'value', 'glossaryCollection', 'classificationDefCollection', 'entityDefCollection', 'typeHeaders', 'enumDefCollection'));
+            this.collection = this.classificationDefCollection;
+        },
+        bindEvents: function() {},
+        onRender: function() {
+            this.renderSearchResultLayoutView();
+            this.renderTagAttributeCompositeView();
+        },
+        renderSearchResultLayoutView: function() {
+            var that = this;
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
+                var value = {
+                    'tag': that.tag,
+                    'searchType': 'basic'
+                };
+                if (that.RSearchResultLayoutView) {
+                    that.RSearchResultLayoutView.show(new SearchResultLayoutView({
+                        value: _.extend({}, that.value, value),
+                        entityDefCollection: that.entityDefCollection,
+                        typeHeaders: that.typeHeaders,
+                        tagCollection: that.collection,
+                        enumDefCollection: that.enumDefCollection,
+                        classificationDefCollection: that.classificationDefCollection,
+                        glossaryCollection: that.glossaryCollection,
+                        fromView: "classification"
+                    }));
+                }
+            });
+        },
+        renderTagAttributeCompositeView: function() {
+            var that = this;
+            Promise.all([import('views/tag/TagAttributeDetailLayoutView')]).then(function(
+                [{
+                    default: TagAttributeDetailLayoutView
+                }]
+            ) {
+                if (that.RTagAttributeDetailLayoutView) {
+                    that.RTagAttributeDetailLayoutView.show(new TagAttributeDetailLayoutView({
+                        tag: that.tag,
+                        collection: that.collection,
+                        enumDefCollection: that.enumDefCollection
+                    }));
+                }
+            });
+        }
+    });
+export default TagDetailLayoutView;

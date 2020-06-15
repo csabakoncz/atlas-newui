@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-define(['require'], function(require) {
-    'use strict';
+'use strict';
 
-    var Enums = {};
+var Enums = {};
 
-    Enums.migrationStatus = {
-        STARTED: "STARTED",
-        IN_PROGRESS: "IN_PROGRESS",
-        FAIL: "FAIL",
-        DONE: "DONE"
-    }
+Enums.migrationStatus = {
+    STARTED: "STARTED",
+    IN_PROGRESS: "IN_PROGRESS",
+    FAIL: "FAIL",
+    DONE: "DONE"
+}
 
-    return Enums;
-});
+export default Enums;

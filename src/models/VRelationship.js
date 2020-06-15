@@ -16,49 +16,47 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, VBaseModel, UrlLinks) {
-    'use strict';
-    var VRelationship = VBaseModel.extend({
+import Globals from 'utils/Globals';
 
-        urlRoot: UrlLinks.relationshipApiUrl(),
+import VBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VRelationship = VBaseModel.extend({
 
-        defaults: {},
+    urlRoot: UrlLinks.relationshipApiUrl(),
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VRelationship';
-        },
-        toString: function() {
-            return this.get('name');
-        },
-        /*************************
-         * Non - CRUD operations
-         *************************/
+    idAttribute: 'id',
 
-        getRelationship: function(token, options) {
-            var url = UrlLinks.relationshipApiUrl(token);
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
+    initialize: function() {
+        this.modelName = 'VRelationship';
+    },
+    toString: function() {
+        return this.get('name');
+    },
+    /*************************
+     * Non - CRUD operations
+     *************************/
 
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        },
-        saveRelationship: function(options) {
-            var url = UrlLinks.relationshipApiUrl();
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'PUT', options);
-        },
-    }, {});
-    return VRelationship;
-});
+    getRelationship: function(token, options) {
+        var url = UrlLinks.relationshipApiUrl(token);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    },
+    saveRelationship: function(options) {
+        var url = UrlLinks.relationshipApiUrl();
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'PUT', options);
+    },
+}, {});
+export default VRelationship;

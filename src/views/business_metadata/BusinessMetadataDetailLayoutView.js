@@ -16,51 +16,49 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/business_metadata/BusinessMetadataDetailLayoutView_tmpl',
-    'utils/Utils',
-], function(require, Backbone, BusinessMetadataDetailLayoutViewTmpl, Utils) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var BusinessMetadataDetailLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends BusinessMetadataDetailLayoutView */
-        {
-            template: BusinessMetadataDetailLayoutViewTmpl,
-            /** Layout sub regions */
-            regions: {},
-            /** ui selector cache */
-            ui: {
-                title: '[data-id="title"]',
-                description: '[data-id="description"]'
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                return events;
-            },
-            /**
-             * intialize a new BusinessMetadataDetailLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'model'));
-                $('body').addClass("detail-page");
-            },
-            onRender: function() {
-                this.renderDetail();
-            },
-            renderDetail: function() {
-                this.ui.title.html('<span>' + this.model.get('name') + '</span>');
-                if (this.model.get('description')) {
-                    this.ui.description.text((this.model.get('description')));
-                }
-            },
-            onDestroy: function() {
-                if (!Utils.getUrlState.isBSDetail()) {
-                    $('body').removeClass("detail-page");
-                }
+import BusinessMetadataDetailLayoutViewTmpl from 'hbs!tmpl/business_metadata/BusinessMetadataDetailLayoutView_tmpl';
+import Utils from 'utils/Utils';
+'use strict';
+
+var BusinessMetadataDetailLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends BusinessMetadataDetailLayoutView */
+    {
+        template: BusinessMetadataDetailLayoutViewTmpl,
+        /** Layout sub regions */
+        regions: {},
+        /** ui selector cache */
+        ui: {
+            title: '[data-id="title"]',
+            description: '[data-id="description"]'
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            return events;
+        },
+        /**
+         * intialize a new BusinessMetadataDetailLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'model'));
+            $('body').addClass("detail-page");
+        },
+        onRender: function() {
+            this.renderDetail();
+        },
+        renderDetail: function() {
+            this.ui.title.html('<span>' + this.model.get('name') + '</span>');
+            if (this.model.get('description')) {
+                this.ui.description.text((this.model.get('description')));
             }
-        });
-    return BusinessMetadataDetailLayoutView;
-});
+        },
+        onDestroy: function() {
+            if (!Utils.getUrlState.isBSDetail()) {
+                $('body').removeClass("detail-page");
+            }
+        }
+    });
+export default BusinessMetadataDetailLayoutView;

@@ -16,106 +16,104 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, VBaseModel, UrlLinks) {
-    'use strict';
-    var VEntity = VBaseModel.extend({
+import Globals from 'utils/Globals';
 
-        urlRoot: UrlLinks.entitiesApiUrl(),
+import VBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VEntity = VBaseModel.extend({
 
-        defaults: {},
+    urlRoot: UrlLinks.entitiesApiUrl(),
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VEntity';
-        },
-        toString: function() {
-            return this.get('name');
-        },
-        /*************************
-         * Non - CRUD operations
-         *************************/
+    idAttribute: 'id',
 
-        getEntity: function(token, options) {
-            var url = UrlLinks.entitiesApiUrl({ guid: token });
+    initialize: function() {
+        this.modelName = 'VEntity';
+    },
+    toString: function() {
+        return this.get('name');
+    },
+    /*************************
+     * Non - CRUD operations
+     *************************/
 
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
+    getEntity: function(token, options) {
+        var url = UrlLinks.entitiesApiUrl({ guid: token });
 
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        },
-        getEntityHeader: function(token, options) {
-            var url = UrlLinks.entityHeaderApiUrl(token);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
 
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    },
+    getEntityHeader: function(token, options) {
+        var url = UrlLinks.entityHeaderApiUrl(token);
 
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        },
-        saveTraitsEntity: function(token, options) {
-            var url = UrlLinks.entitiesTraitsApiUrl(token);
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
-        },
-        getEntityDef: function(name, options) {
-            var url = UrlLinks.entitiesDefApiUrl(name);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
 
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    },
+    saveTraitsEntity: function(token, options) {
+        var url = UrlLinks.entitiesTraitsApiUrl(token);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
+    },
+    getEntityDef: function(name, options) {
+        var url = UrlLinks.entitiesDefApiUrl(name);
 
-            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-        },
-        createOreditEntity: function(options) {
-            var url = UrlLinks.entitiesApiUrl();
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, "", options);
-        },
-        saveEntityLabels: function(guid, options) {
-            var url = UrlLinks.entityLabelsAPIUrl(guid);
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, "POST", options);
-        },
-        saveBusinessMetadata: function(options) {
-            var url = UrlLinks.businessMetadataDefApiUrl();
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, '', options);
-        },
-        deleteBusinessMetadata: function(options) {
-            var url = UrlLinks.businessMetadataDefApiUrl(options.typeName);
-            return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
-        },
-        saveBusinessMetadataEntity: function(guid, options) {
-            var url = UrlLinks.entitiesBusinessMetadataApiUrl(guid);
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
-        }
-    }, {});
-    return VEntity;
-});
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+
+        return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
+    },
+    createOreditEntity: function(options) {
+        var url = UrlLinks.entitiesApiUrl();
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, "", options);
+    },
+    saveEntityLabels: function(guid, options) {
+        var url = UrlLinks.entityLabelsAPIUrl(guid);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, "POST", options);
+    },
+    saveBusinessMetadata: function(options) {
+        var url = UrlLinks.businessMetadataDefApiUrl();
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, '', options);
+    },
+    deleteBusinessMetadata: function(options) {
+        var url = UrlLinks.businessMetadataDefApiUrl(options.typeName);
+        return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
+    },
+    saveBusinessMetadataEntity: function(guid, options) {
+        var url = UrlLinks.entitiesBusinessMetadataApiUrl(guid);
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
+    }
+}, {});
+export default VEntity;

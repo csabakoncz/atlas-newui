@@ -16,63 +16,61 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VEntity',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VEntity, UrlLinks) {
-    'use strict';
-    var VEntityList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.entitiesApiUrl(),
+import Globals from 'utils/Globals';
 
-            model: VEntity,
+import BaseCollection from 'collection/BaseCollection';
+import VEntity from 'models/VEntity';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VEntityList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.entitiesApiUrl(),
 
-            initialize: function() {
-                this.modelName = 'VEntity';
-                this.modelAttrName = 'entityDefs';
-            },
-            parseRecords: function(resp, options) {
-                try {
-                    // if (!this.modelAttrName) {
-                    //     throw new Error("this.modelAttrName not defined for " + this);
-                    // }
-                    if (resp.entity && resp.referredEntities) {
-                        var obj = {
-                            entity: resp.entity,
-                            referredEntities: resp.referredEntities
-                        }
-                        return obj;
-                    } else if (resp[this.modelAttrName]) {
-                        return resp[this.modelAttrName];
-                    } else {
-                        return resp
+        model: VEntity,
+
+        initialize: function() {
+            this.modelName = 'VEntity';
+            this.modelAttrName = 'entityDefs';
+        },
+        parseRecords: function(resp, options) {
+            try {
+                // if (!this.modelAttrName) {
+                //     throw new Error("this.modelAttrName not defined for " + this);
+                // }
+                if (resp.entity && resp.referredEntities) {
+                    var obj = {
+                        entity: resp.entity,
+                        referredEntities: resp.referredEntities
                     }
-
-                } catch (e) {
-                    console.log(e);
+                    return obj;
+                } else if (resp[this.modelAttrName]) {
+                    return resp[this.modelAttrName];
+                } else {
+                    return resp
                 }
-            },
-            getAdminData: function(options) {
-                var url = UrlLinks.adminApiUrl();
-                options = _.extend({
-                    contentType: 'application/json',
-                    dataType: 'json'
-                }, options);
-                return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
+
+            } catch (e) {
+                console.log(e);
             }
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        getAdminData: function(options) {
+            var url = UrlLinks.adminApiUrl();
+            options = _.extend({
+                contentType: 'application/json',
+                dataType: 'json'
+            }, options);
+            return this.constructor.nonCrudOperation.call(this, url, 'POST', options);
         }
-    );
-    return VEntityList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VEntityList;

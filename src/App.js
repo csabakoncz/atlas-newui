@@ -16,23 +16,22 @@
  * limitations under the License.
  */
 
-define(['marionette'], function(Marionette) {
+import Marionette from 'marionette';
 
-    var App = new Marionette.Application();
+var App = new Marionette.Application();
 
-    App.addRegions({
-        rHeader: '#header',
-        rSideNav: '#sideNav-wrapper',
-        rNContent: '#new-page-wrapper',
-        rNHeader: '#new-header',
-        rContent: '#page-wrapper',
-        rFooter: '#footer'
+App.addRegions({
+    rHeader: '#header',
+    rSideNav: '#sideNav-wrapper',
+    rNContent: '#new-page-wrapper',
+    rNHeader: '#new-header',
+    rContent: '#page-wrapper',
+    rFooter: '#footer'
 
-    });
-
-    App.addInitializer(function() {
-        Backbone.history.start();
-    });
-
-    return App;
 });
+
+App.addInitializer(function() {
+    Backbone.history.start();
+});
+
+export default App;

@@ -16,60 +16,58 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VSchema',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VSchema, UrlLinks) {
-    'use strict';
-    var VSchemaList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.baseURL,
-            model: VSchema,
-            initialize: function() {
-                this.modelName = 'VSchema';
-                this.modelAttrName = 'results';
-            },
-            parseRecords: function(resp, options) {
-                try {
-                    if (!this.modelAttrName) {
-                        throw new Error("this.modelAttrName not defined for " + this);
-                    }
-                    this.keyList = resp[this.modelAttrName].dataType.attributeDefinitions;
-                    if (resp[this.modelAttrName].dataType.superTypes) {
-                        if (resp[this.modelAttrName].dataType.superTypes.indexOf("Asset") != -1) {
-                            this.keyList.push({
-                                "name": "name",
-                                "dataTypeName": "string",
-                                "isComposite": false,
-                                "isIndexable": true,
-                                "isUnique": false,
-                                "multiplicity": {},
-                                "reverseAttributeName": null
-                            })
-                        }
-                    }
-                    var arr = [];
-                    resp[this.modelAttrName].rows.forEach(function(d) {
-                        arr.push(d);
-                    });
-                    return arr;
-                } catch (e) {
-                    console.log(e);
-                }
-            },
+import Globals from 'utils/Globals';
+
+import BaseCollection from 'collection/BaseCollection';
+import VSchema from 'models/VSchema';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VSchemaList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.baseURL,
+        model: VSchema,
+        initialize: function() {
+            this.modelName = 'VSchema';
+            this.modelAttrName = 'results';
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
-        }
-    );
-    return VSchemaList;
-});
+        parseRecords: function(resp, options) {
+            try {
+                if (!this.modelAttrName) {
+                    throw new Error("this.modelAttrName not defined for " + this);
+                }
+                this.keyList = resp[this.modelAttrName].dataType.attributeDefinitions;
+                if (resp[this.modelAttrName].dataType.superTypes) {
+                    if (resp[this.modelAttrName].dataType.superTypes.indexOf("Asset") != -1) {
+                        this.keyList.push({
+                            "name": "name",
+                            "dataTypeName": "string",
+                            "isComposite": false,
+                            "isIndexable": true,
+                            "isUnique": false,
+                            "multiplicity": {},
+                            "reverseAttributeName": null
+                        })
+                    }
+                }
+                var arr = [];
+                resp[this.modelAttrName].rows.forEach(function(d) {
+                    arr.push(d);
+                });
+                return arr;
+            } catch (e) {
+                console.log(e);
+            }
+        },
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VSchemaList;

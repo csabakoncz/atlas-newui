@@ -16,100 +16,100 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/entity/EntityDetailTableLayoutView_tmpl',
-    'utils/CommonViewFunction',
-    'models/VEntity',
-    'utils/Utils'
-], function(require, Backbone, EntityDetailTableLayoutView_tmpl, CommonViewFunction, VEntity, Utils) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var EntityDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends EntityDetailTableLayoutView */
-        {
-            _viewName: 'EntityDetailTableLayoutView',
+import EntityDetailTableLayoutView_tmpl from 'hbs!tmpl/entity/EntityDetailTableLayoutView_tmpl';
+import CommonViewFunction from 'utils/CommonViewFunction';
+import VEntity from 'models/VEntity';
+import Utils from 'utils/Utils';
+'use strict';
 
-            template: EntityDetailTableLayoutView_tmpl,
+var EntityDetailTableLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends EntityDetailTableLayoutView */
+    {
+        _viewName: 'EntityDetailTableLayoutView',
 
-            templateHelpers: function() {
-                return {
-                    editEntity: this.editEntity
-                };
-            },
+        template: EntityDetailTableLayoutView_tmpl,
 
-            /** Layout sub regions */
-            regions: {},
+        templateHelpers: function() {
+            return {
+                editEntity: this.editEntity
+            };
+        },
 
-            /** ui selector cache */
-            ui: {
-                detailValue: "[data-id='detailValue']",
-                noValueToggle: "[data-id='noValueToggle']",
-                editButton: '[data-id="editButton"]',
-            },
-            /** ui events hash */
-            events: function() {
-                var events = {};
-                events["click " + this.ui.noValueToggle] = function() {
-                    this.showAllProperties = !this.showAllProperties;
-                    this.ui.noValueToggle.attr("data-original-title", (this.showAllProperties ? "Hide" : "Show") + " empty values");
-                    Utils.togglePropertyRelationshipTableEmptyValues({
-                        "inputType": this.ui.noValueToggle,
-                        "tableEl": this.ui.detailValue
-                    });
-                };
-                events["click " + this.ui.editButton] = 'onClickEditEntity';
-                return events;
-            },
-            /**
-             * intialize a new EntityDetailTableLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'entity', 'typeHeaders', 'attributeDefs', 'attributes', 'editEntity', 'guid', 'entityDefCollection', 'searchVent', 'fetchCollection'));
-                this.entityModel = new VEntity({});
-                this.showAllProperties = false;
-            },
-            bindEvents: function() {},
-            onRender: function() {
-                this.entityTableGenerate();
-            },
-            entityTableGenerate: function() {
-                var that = this,
-                    highlightString = $(".atlas-header .global-search-container input.global-search").val(),
-                    table = CommonViewFunction.propertyTable({
-                        scope: this,
-                        valueObject: this.entity.attributes,
-                        attributeDefs: this.attributeDefs,
-                        highlightString: highlightString
-                    });
-                this.ui.detailValue.append(table);
+        /** Layout sub regions */
+        regions: {},
+
+        /** ui selector cache */
+        ui: {
+            detailValue: "[data-id='detailValue']",
+            noValueToggle: "[data-id='noValueToggle']",
+            editButton: '[data-id="editButton"]',
+        },
+        /** ui events hash */
+        events: function() {
+            var events = {};
+            events["click " + this.ui.noValueToggle] = function() {
+                this.showAllProperties = !this.showAllProperties;
+                this.ui.noValueToggle.attr("data-original-title", (this.showAllProperties ? "Hide" : "Show") + " empty values");
                 Utils.togglePropertyRelationshipTableEmptyValues({
                     "inputType": this.ui.noValueToggle,
                     "tableEl": this.ui.detailValue
                 });
-                setTimeout(function() {
-                    that.$el.find(".searched-term-highlight").addClass("bold");
-                }, 5000)
-            },
-            onClickEditEntity: function(e) {
-                var that = this;
-                $(e.currentTarget).blur();
-                require([
-                    'views/entity/CreateEntityLayoutView'
-                ], function(CreateEntityLayoutView) {
-                    var view = new CreateEntityLayoutView({
-                        guid: that.guid,
-                        searchVent: that.searchVent,
-                        entityDefCollection: that.entityDefCollection,
-                        typeHeaders: that.typeHeaders,
-                        callback: function() {
-                            that.fetchCollection();
-                        }
-                    });
-
+            };
+            events["click " + this.ui.editButton] = 'onClickEditEntity';
+            return events;
+        },
+        /**
+         * intialize a new EntityDetailTableLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'entity', 'typeHeaders', 'attributeDefs', 'attributes', 'editEntity', 'guid', 'entityDefCollection', 'searchVent', 'fetchCollection'));
+            this.entityModel = new VEntity({});
+            this.showAllProperties = false;
+        },
+        bindEvents: function() {},
+        onRender: function() {
+            this.entityTableGenerate();
+        },
+        entityTableGenerate: function() {
+            var that = this,
+                highlightString = $(".atlas-header .global-search-container input.global-search").val(),
+                table = CommonViewFunction.propertyTable({
+                    scope: this,
+                    valueObject: this.entity.attributes,
+                    attributeDefs: this.attributeDefs,
+                    highlightString: highlightString
                 });
-            }
-        });
-    return EntityDetailTableLayoutView;
-});
+            this.ui.detailValue.append(table);
+            Utils.togglePropertyRelationshipTableEmptyValues({
+                "inputType": this.ui.noValueToggle,
+                "tableEl": this.ui.detailValue
+            });
+            setTimeout(function() {
+                that.$el.find(".searched-term-highlight").addClass("bold");
+            }, 5000)
+        },
+        onClickEditEntity: function(e) {
+            var that = this;
+            $(e.currentTarget).blur();
+            Promise.all([import('views/entity/CreateEntityLayoutView')]).then(function(
+                [{
+                    default: CreateEntityLayoutView
+                }]
+            ) {
+                var view = new CreateEntityLayoutView({
+                    guid: that.guid,
+                    searchVent: that.searchVent,
+                    entityDefCollection: that.entityDefCollection,
+                    typeHeaders: that.typeHeaders,
+                    callback: function() {
+                        that.fetchCollection();
+                    }
+                });
+
+            });
+        }
+    });
+export default EntityDetailTableLayoutView;

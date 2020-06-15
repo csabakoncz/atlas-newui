@@ -16,116 +16,114 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/search/save/SaveModalLayoutView_tmpl',
-    'utils/Utils',
-    'modules/Modal',
-    'utils/UrlLinks',
-    'platform',
-    'models/VSearch',
-    'utils/CommonViewFunction',
-    'utils/Messages'
-], function(require, Backbone, SaveModalLayoutViewTmpl, Utils, Modal, UrlLinks, platform, VSearch, CommonViewFunction, Messages) {
+import Backbone from 'backbone';
+
+import SaveModalLayoutViewTmpl from 'hbs!tmpl/search/save/SaveModalLayoutView_tmpl';
+import Utils from 'utils/Utils';
+import Modal from 'modules/Modal';
+import UrlLinks from 'utils/UrlLinks';
+import platform from 'platform';
+import VSearch from 'models/VSearch';
+import CommonViewFunction from 'utils/CommonViewFunction';
+import Messages from 'utils/Messages';
 
 
-    var SaveModalLayoutView = Backbone.Marionette.LayoutView.extend({
-        _viewName: 'SaveModalLayoutView',
-        template: SaveModalLayoutViewTmpl,
-        regions: {},
-        ui: {
-            saveAsName: "[data-id='saveAsName']"
-        },
-        templateHelpers: function() {
-            return {
-                selectedModel: this.selectedModel ? this.selectedModel.toJSON() : null
-            };
-        },
-        events: function() {
-            var events = {};
-            return events;
-        },
-        initialize: function(options) {
-            var that = this;
-            _.extend(this, _.pick(options, 'selectedModel', 'collection', 'getValue', 'isBasic', 'saveObj'));
+var SaveModalLayoutView = Backbone.Marionette.LayoutView.extend({
+    _viewName: 'SaveModalLayoutView',
+    template: SaveModalLayoutViewTmpl,
+    regions: {},
+    ui: {
+        saveAsName: "[data-id='saveAsName']"
+    },
+    templateHelpers: function() {
+        return {
+            selectedModel: this.selectedModel ? this.selectedModel.toJSON() : null
+        };
+    },
+    events: function() {
+        var events = {};
+        return events;
+    },
+    initialize: function(options) {
+        var that = this;
+        _.extend(this, _.pick(options, 'selectedModel', 'collection', 'getValue', 'isBasic', 'saveObj'));
 
-            this.model = new VSearch();
-            if (this.saveObj) {
-                this.onCreateButton();
-            } else {
-                var modal = new Modal({
-                    title: (this.selectedModel ? 'Update' : 'Create') + ' your favorite search ' + (this.selectedModel ? 'name' : ''),
-                    content: this,
-                    cancelText: "Cancel",
-                    okCloses: false,
-                    okText: this.selectedModel ? 'Update' : 'Create',
-                    allowCancel: true
-                }).open();
-                modal.$el.find('button.ok').attr("disabled", "true");
-                this.ui.saveAsName.on('keyup', function(e) {
-                    modal.$el.find('button.ok').removeAttr("disabled");
-                });
-                this.ui.saveAsName.on('keyup', function(e) {
-                    if ((e.keyCode == 8 || e.keyCode == 32 || e.keyCode == 46) && e.currentTarget.value.trim() == "") {
-                        modal.$el.find('button.ok').attr("disabled", "true");
-                    }
-                });
-                modal.on('ok', function() {
+        this.model = new VSearch();
+        if (this.saveObj) {
+            this.onCreateButton();
+        } else {
+            var modal = new Modal({
+                title: (this.selectedModel ? 'Update' : 'Create') + ' your favorite search ' + (this.selectedModel ? 'name' : ''),
+                content: this,
+                cancelText: "Cancel",
+                okCloses: false,
+                okText: this.selectedModel ? 'Update' : 'Create',
+                allowCancel: true
+            }).open();
+            modal.$el.find('button.ok').attr("disabled", "true");
+            this.ui.saveAsName.on('keyup', function(e) {
+                modal.$el.find('button.ok').removeAttr("disabled");
+            });
+            this.ui.saveAsName.on('keyup', function(e) {
+                if ((e.keyCode == 8 || e.keyCode == 32 || e.keyCode == 46) && e.currentTarget.value.trim() == "") {
                     modal.$el.find('button.ok').attr("disabled", "true");
-                    that.onCreateButton(modal);
-                });
-                modal.on('closeModal', function() {
-                    modal.trigger('cancel');
-                });
-            }
-        },
-        onCreateButton: function(modal) {
-            var that = this,
-                obj = { name: this.ui.saveAsName.val ? this.ui.saveAsName.val() : null };
-            if (this.selectedModel) {
-                // Update Name only.
-                var saveObj = this.selectedModel.toJSON();
-                saveObj.name = obj.name;
-            } else {
-                obj.value = this.getValue();
-                if (this.saveObj) {
-                    // Save search Filter
-                    _.extend(obj, this.saveObj);
-                }
-                var saveObj = CommonViewFunction.generateObjectForSaveSearchApi(obj);
-                if (this.isBasic) {
-                    saveObj['searchType'] = "BASIC";
-                } else {
-                    saveObj['searchType'] = "ADVANCED";
-                }
-            }
-            this.model.urlRoot = UrlLinks.saveSearchApiUrl();
-            this.model.save(saveObj, {
-                type: (saveObj.guid ? 'PUT' : 'POST'),
-                success: function(model, data) {
-                    if (that.collection) {
-                        if (saveObj.guid) {
-                            var collectionRef = that.collection.find({ guid: data.guid });
-                            if (collectionRef) {
-                                collectionRef.set(data);
-                            }
-                            Utils.notifySuccess({
-                                content: obj.name + Messages.getAbbreviationMsg(false, "editSuccessMessage")
-                            });
-                        } else {
-                            that.collection.add(data);
-                            Utils.notifySuccess({
-                                content: obj.name + Messages.getAbbreviationMsg(false, "addSuccessMessage")
-                            });
-                        }
-                    }
-
                 }
             });
-            if (modal) {
+            modal.on('ok', function() {
+                modal.$el.find('button.ok').attr("disabled", "true");
+                that.onCreateButton(modal);
+            });
+            modal.on('closeModal', function() {
                 modal.trigger('cancel');
+            });
+        }
+    },
+    onCreateButton: function(modal) {
+        var that = this,
+            obj = { name: this.ui.saveAsName.val ? this.ui.saveAsName.val() : null };
+        if (this.selectedModel) {
+            // Update Name only.
+            var saveObj = this.selectedModel.toJSON();
+            saveObj.name = obj.name;
+        } else {
+            obj.value = this.getValue();
+            if (this.saveObj) {
+                // Save search Filter
+                _.extend(obj, this.saveObj);
+            }
+            var saveObj = CommonViewFunction.generateObjectForSaveSearchApi(obj);
+            if (this.isBasic) {
+                saveObj['searchType'] = "BASIC";
+            } else {
+                saveObj['searchType'] = "ADVANCED";
             }
         }
-    });
-    return SaveModalLayoutView;
+        this.model.urlRoot = UrlLinks.saveSearchApiUrl();
+        this.model.save(saveObj, {
+            type: (saveObj.guid ? 'PUT' : 'POST'),
+            success: function(model, data) {
+                if (that.collection) {
+                    if (saveObj.guid) {
+                        var collectionRef = that.collection.find({ guid: data.guid });
+                        if (collectionRef) {
+                            collectionRef.set(data);
+                        }
+                        Utils.notifySuccess({
+                            content: obj.name + Messages.getAbbreviationMsg(false, "editSuccessMessage")
+                        });
+                    } else {
+                        that.collection.add(data);
+                        Utils.notifySuccess({
+                            content: obj.name + Messages.getAbbreviationMsg(false, "addSuccessMessage")
+                        });
+                    }
+                }
+
+            }
+        });
+        if (modal) {
+            modal.trigger('cancel');
+        }
+    }
 });
+export default SaveModalLayoutView;

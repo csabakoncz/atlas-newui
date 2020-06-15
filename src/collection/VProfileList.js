@@ -16,34 +16,32 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VProfile'
-], function(require, Globals, BaseCollection, VProfile) {
-    'use strict';
-    var VProfileList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: Globals.baseURL + '/api/atlas/entities',
+import Globals from 'utils/Globals';
 
-            model: VProfile,
+import BaseCollection from 'collection/BaseCollection';
+import VProfile from 'models/VProfile';
+'use strict';
+var VProfileList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: Globals.baseURL + '/api/atlas/entities',
 
-            initialize: function() {
-                this.modelName = 'VProfile';
-                this.modelAttrName = 'definition';
-                this.bindErrorEvents();
-            }
-        },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        model: VProfile,
+
+        initialize: function() {
+            this.modelName = 'VProfile';
+            this.modelAttrName = 'definition';
+            this.bindErrorEvents();
         }
-    );
-    return VProfileList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VProfileList;

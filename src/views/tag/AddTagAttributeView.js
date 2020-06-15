@@ -16,85 +16,82 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/tag/AddTagAttributeView_tmpl',
-    'views/tag/TagAttributeItemView',
-    'utils/UrlLinks',
-    'collection/VTagList'
+import Backbone from 'backbone';
 
-], function(require, Backbone, AddTagAttributeView_tmpl, TagAttributeItemView, UrlLinks, VTagList) {
-    'use strict';
+import AddTagAttributeView_tmpl from 'hbs!tmpl/tag/AddTagAttributeView_tmpl';
+import TagAttributeItemView from 'views/tag/TagAttributeItemView';
+import UrlLinks from 'utils/UrlLinks';
+import VTagList from 'collection/VTagList';
+'use strict';
 
-    return Backbone.Marionette.CompositeView.extend(
-        /** @lends GlobalExclusionListView */
-        {
+export default Backbone.Marionette.CompositeView.extend(
+    /** @lends GlobalExclusionListView */
+    {
 
-            template: AddTagAttributeView_tmpl,
-            templateHelpers: function() {
-                return {
-                    create: this.create,
-                    description: this.description
-                };
-            },
+        template: AddTagAttributeView_tmpl,
+        templateHelpers: function() {
+            return {
+                create: this.create,
+                description: this.description
+            };
+        },
 
-            childView: TagAttributeItemView,
+        childView: TagAttributeItemView,
 
-            childViewContainer: "[data-id='addAttributeDiv']",
+        childViewContainer: "[data-id='addAttributeDiv']",
 
-            childViewOptions: function() {
-                return {
-                    // saveButton: this.ui.saveButton,
-                    parentView: this
-                };
-            },
-            /** ui selector cache */
-            ui: {
-                close: "[data-id='close']",
-                attributeId: "[data-id='attributeId']",
-                attributeData: "[data-id='attributeData']",
-                addAttributeDiv: "[data-id='addAttributeDiv']"
-            },
-            events: function() {
-                var events = {};
-                events["click " + this.ui.attributeData] = "onClickAddAttriBtn";
-                return events;
-            },
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'enumDefCollection'));
-                this.collection = new Backbone.Collection();
-                this.collectionAttribute();
-            },
-            onRender: function() {
-                var that = this;
-                this.ui.addAttributeDiv.find('.closeInput').hide();
-                if (!('placeholder' in HTMLInputElement.prototype)) {
-                    this.ui.addAttributeDiv.find('input,textarea').placeholder();
-                }
-                that.$('.hide').removeClass('hide');
-            },
-            bindEvents: function() {},
-            collectionAttribute: function() {
-                this.collection.add(new Backbone.Model({
-                    "name": "",
-                    "typeName": "string",
-                    "isOptional": true,
-                    "cardinality": "SINGLE",
-                    "valuesMinCount": 0,
-                    "valuesMaxCount": 1,
-                    "isUnique": false,
-                    "isIndexable": true
-                }));
-
-            },
-            onClickAddAttriBtn: function() {
-                if (this.ui.addAttributeDiv.find("input").length > 0) {
-                    this.ui.addAttributeDiv.find('.closeInput').show();
-                };
-                this.collectionAttribute();
-                if (!('placeholder' in HTMLInputElement.prototype)) {
-                    this.ui.addAttributeDiv.find('input,textarea').placeholder();
-                }
+        childViewOptions: function() {
+            return {
+                // saveButton: this.ui.saveButton,
+                parentView: this
+            };
+        },
+        /** ui selector cache */
+        ui: {
+            close: "[data-id='close']",
+            attributeId: "[data-id='attributeId']",
+            attributeData: "[data-id='attributeData']",
+            addAttributeDiv: "[data-id='addAttributeDiv']"
+        },
+        events: function() {
+            var events = {};
+            events["click " + this.ui.attributeData] = "onClickAddAttriBtn";
+            return events;
+        },
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'enumDefCollection'));
+            this.collection = new Backbone.Collection();
+            this.collectionAttribute();
+        },
+        onRender: function() {
+            var that = this;
+            this.ui.addAttributeDiv.find('.closeInput').hide();
+            if (!('placeholder' in HTMLInputElement.prototype)) {
+                this.ui.addAttributeDiv.find('input,textarea').placeholder();
             }
-        });
-});
+            that.$('.hide').removeClass('hide');
+        },
+        bindEvents: function() {},
+        collectionAttribute: function() {
+            this.collection.add(new Backbone.Model({
+                "name": "",
+                "typeName": "string",
+                "isOptional": true,
+                "cardinality": "SINGLE",
+                "valuesMinCount": 0,
+                "valuesMaxCount": 1,
+                "isUnique": false,
+                "isIndexable": true
+            }));
+
+        },
+        onClickAddAttriBtn: function() {
+            if (this.ui.addAttributeDiv.find("input").length > 0) {
+                this.ui.addAttributeDiv.find('.closeInput').show();
+            };
+            this.collectionAttribute();
+            if (!('placeholder' in HTMLInputElement.prototype)) {
+                this.ui.addAttributeDiv.find('input,textarea').placeholder();
+            }
+        }
+    });

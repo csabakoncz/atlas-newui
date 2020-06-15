@@ -16,47 +16,49 @@
  * limitations under the License.
  */
 
-define(['require',
-    'backbone',
-    'hbs!tmpl/search/SearchDetailLayoutView_tmpl',
-], function(require, Backbone, SearchDetailLayoutViewTmpl) {
-    'use strict';
+import Backbone from 'backbone';
 
-    var SearchDetailLayoutView = Backbone.Marionette.LayoutView.extend(
-        /** @lends SearchDetailLayoutView */
-        {
-            _viewName: 'SearchDetailLayoutView',
+import SearchDetailLayoutViewTmpl from 'hbs!tmpl/search/SearchDetailLayoutView_tmpl';
+'use strict';
 
-            template: SearchDetailLayoutViewTmpl,
+var SearchDetailLayoutView = Backbone.Marionette.LayoutView.extend(
+    /** @lends SearchDetailLayoutView */
+    {
+        _viewName: 'SearchDetailLayoutView',
 
-            /** Layout sub regions */
-            regions: {
-                RSearchResultLayoutView: "#r_searchResultLayoutView"
-            },
+        template: SearchDetailLayoutViewTmpl,
 
-            /** ui selector cache */
-            ui: {},
-            /** ui events hash */
-            events: function() {},
-            /**
-             * intialize a new SearchDetailLayoutView Layout
-             * @constructs
-             */
-            initialize: function(options) {
-                _.extend(this, _.pick(options, 'value', 'initialView', 'classificationDefCollection', 'entityDefCollection', 'typeHeaders', 'searchVent', 'enumDefCollection', 'searchTableColumns'));
-            },
-            bindEvents: function() {},
-            onRender: function() {
-                this.renderSearchResultLayoutView();
-            },
-            renderSearchResultLayoutView: function() {
-                var that = this;
-                require(['views/search/SearchResultLayoutView'], function(SearchResultLayoutView) {
-                    if (that.RSearchResultLayoutView) {
-                        that.RSearchResultLayoutView.show(new SearchResultLayoutView(that.options));
-                    }
-                });
-            }
-        });
-    return SearchDetailLayoutView;
-});
+        /** Layout sub regions */
+        regions: {
+            RSearchResultLayoutView: "#r_searchResultLayoutView"
+        },
+
+        /** ui selector cache */
+        ui: {},
+        /** ui events hash */
+        events: function() {},
+        /**
+         * intialize a new SearchDetailLayoutView Layout
+         * @constructs
+         */
+        initialize: function(options) {
+            _.extend(this, _.pick(options, 'value', 'initialView', 'classificationDefCollection', 'entityDefCollection', 'typeHeaders', 'searchVent', 'enumDefCollection', 'searchTableColumns'));
+        },
+        bindEvents: function() {},
+        onRender: function() {
+            this.renderSearchResultLayoutView();
+        },
+        renderSearchResultLayoutView: function() {
+            var that = this;
+            Promise.all([import('views/search/SearchResultLayoutView')]).then(function(
+                [{
+                    default: SearchResultLayoutView
+                }]
+            ) {
+                if (that.RSearchResultLayoutView) {
+                    that.RSearchResultLayoutView.show(new SearchResultLayoutView(that.options));
+                }
+            });
+        }
+    });
+export default SearchDetailLayoutView;

@@ -16,50 +16,48 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'models/BaseModel',
-    'utils/UrlLinks'
-], function(require, Globals, vBaseModel, UrlLinks) {
-    'use strict';
-    var VTag = vBaseModel.extend({
-        urlRoot: UrlLinks.classificationDefApiUrl(),
+import Globals from 'utils/Globals';
 
-        defaults: {},
+import vBaseModel from 'models/BaseModel';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VTag = vBaseModel.extend({
+    urlRoot: UrlLinks.classificationDefApiUrl(),
 
-        serverSchema: {},
+    defaults: {},
 
-        idAttribute: 'id',
+    serverSchema: {},
 
-        initialize: function() {
-            this.modelName = 'VTag';
-        },
-        toString: function() {
-            return this.get('name');
-        },
-        /*************************
-         * Non - CRUD operations
-         *************************/
-        deleteAssociation: function(guid, name, associatedGuid, options) {
-            var url = UrlLinks.entitiesApiUrl({ guid: guid, name: name, associatedGuid: associatedGuid });
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
-        },
-        deleteTag: function(options) {
-            var url = UrlLinks.getDefApiUrl(null, options.typeName);
-            return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
-        },
-        saveTagAttribute: function(options) {
-            var url = UrlLinks.classificationDefApiUrl();
-            options = _.extend({
-                contentType: 'application/json',
-                dataType: 'json'
-            }, options);
-            return this.constructor.nonCrudOperation.call(this, url, 'PUT', options);
-        }
-    }, {});
-    return VTag;
-});
+    idAttribute: 'id',
+
+    initialize: function() {
+        this.modelName = 'VTag';
+    },
+    toString: function() {
+        return this.get('name');
+    },
+    /*************************
+     * Non - CRUD operations
+     *************************/
+    deleteAssociation: function(guid, name, associatedGuid, options) {
+        var url = UrlLinks.entitiesApiUrl({ guid: guid, name: name, associatedGuid: associatedGuid });
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
+    },
+    deleteTag: function(options) {
+        var url = UrlLinks.getDefApiUrl(null, options.typeName);
+        return this.constructor.nonCrudOperation.call(this, url, 'DELETE', options);
+    },
+    saveTagAttribute: function(options) {
+        var url = UrlLinks.classificationDefApiUrl();
+        options = _.extend({
+            contentType: 'application/json',
+            dataType: 'json'
+        }, options);
+        return this.constructor.nonCrudOperation.call(this, url, 'PUT', options);
+    }
+}, {});
+export default VTag;

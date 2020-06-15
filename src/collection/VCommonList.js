@@ -16,34 +16,32 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VCommon',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VCommon, UrlLinks) {
-    'use strict';
-    var VCommonList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.baseURL + '',
+import Globals from 'utils/Globals';
 
-            model: VCommon,
+import BaseCollection from 'collection/BaseCollection';
+import VCommon from 'models/VCommon';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VCommonList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.baseURL + '',
 
-            initialize: function() {
-                this.modelName = 'VCommon';
-                this.modelAttrName = '';
-            },
+        model: VCommon,
+
+        initialize: function() {
+            this.modelName = 'VCommon';
+            this.modelAttrName = '';
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
-        }
-    );
-    return VCommonList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VCommonList;

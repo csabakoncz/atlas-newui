@@ -16,44 +16,42 @@
  * limitations under the License.
  */
 
-define(['require',
-    'utils/Globals',
-    'collection/BaseCollection',
-    'models/VRelationship',
-    'utils/UrlLinks'
-], function(require, Globals, BaseCollection, VRelationship, UrlLinks) {
-    'use strict';
-    var VRelationshipList = BaseCollection.extend(
-        //Prototypal attributes
-        {
-            url: UrlLinks.baseURL,
+import Globals from 'utils/Globals';
 
-            model: VRelationship,
+import BaseCollection from 'collection/BaseCollection';
+import VRelationship from 'models/VRelationship';
+import UrlLinks from 'utils/UrlLinks';
+'use strict';
+var VRelationshipList = BaseCollection.extend(
+    //Prototypal attributes
+    {
+        url: UrlLinks.baseURL,
 
-            initialize: function() {
-                this.modelName = 'VRelationship';
-                this.modelAttrName = 'results';
-            },
-            getRelationship: function(id, options) {
-                var url = UrlLinks.relationshipApiUrl(id);
+        model: VRelationship,
 
-                options = _.extend({
-                    contentType: 'application/json',
-                    dataType: 'json'
-                }, options);
-
-                return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
-            }
+        initialize: function() {
+            this.modelName = 'VRelationship';
+            this.modelAttrName = 'results';
         },
-        //Static Class Members
-        {
-            /**
-             * Table Cols to be passed to Backgrid
-             * UI has to use this as base and extend this.
-             *
-             */
-            tableCols: {}
+        getRelationship: function(id, options) {
+            var url = UrlLinks.relationshipApiUrl(id);
+
+            options = _.extend({
+                contentType: 'application/json',
+                dataType: 'json'
+            }, options);
+
+            return this.constructor.nonCrudOperation.call(this, url, 'GET', options);
         }
-    );
-    return VRelationshipList;
-});
+    },
+    //Static Class Members
+    {
+        /**
+         * Table Cols to be passed to Backgrid
+         * UI has to use this as base and extend this.
+         *
+         */
+        tableCols: {}
+    }
+);
+export default VRelationshipList;
