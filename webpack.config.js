@@ -6,7 +6,7 @@ const webpack = require('webpack')
 const atlasPubDir=path.resolve(__dirname,'atlas/dashboardv2/public')
 const atlasExternalLib=path.resolve(atlasPubDir,'js/external_lib')
 
-const atlasJsDir=path.resolve(atlasPubDir,'js')
+const atlasJsDir=path.resolve(__dirname,'src')
 const ourModules=path.resolve(__dirname,'node_modules')
 
 module.exports = {
