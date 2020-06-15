@@ -11,6 +11,7 @@ const ourModules=path.resolve(__dirname,'node_modules')
 
 module.exports = {
   mode: 'production',
+  devtool: 'source-map',
   entry: './src/index.ts',
   plugins: [
     new CleanWebpackPlugin(),
