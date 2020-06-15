@@ -23,6 +23,8 @@ import Messages from 'utils/Messages';
 import Enums from 'utils/Enums';
 import 'pnotify.buttons';
 import 'pnotify.confirm';
+import $ from 'jquery'
+
 'use strict';
 
 var Utils = {};
