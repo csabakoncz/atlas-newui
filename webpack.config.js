@@ -74,7 +74,7 @@ module.exports = {
   },
   resolveLoader: {
     alias: {
-      'hbs': 'handlebars-loader?runtime=handlebars',
+      'hbs': 'handlebars-loader?runtime=handlebars/runtime',
     }
   },
   resolve: {

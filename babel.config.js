@@ -21,6 +21,7 @@ module.exports = {
         "alias": {
           'pnotify.buttons': 'pnotify',
           'pnotify.confirm': 'pnotify',
+          'marionette': 'backbone.marionette',
         }
       }
     ],

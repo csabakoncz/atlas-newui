@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import Handlebars from 'handlebars';
+import Handlebars from 'handlebars/runtime';
 
 /*
  * General guidelines while writing helpers:
