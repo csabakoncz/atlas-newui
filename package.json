@@ -10,7 +10,7 @@
     "dev-server": "node server.js --dev",
     "server": "node server.js",
     "build": "webpack",
-    "test-karma": "COVERAGE=true USE_PUPPETEER=true karma start --browsers=ChromeHeadless --single-run",
+    "test-karma": "COVERAGE=true USE_PUPPETEER=true karma start --browsers=ChromeHeadlessNoSandbox --single-run",
     "test": "jest --coverage"
   },
   "keywords": [],

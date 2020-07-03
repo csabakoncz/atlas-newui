@@ -90,6 +90,12 @@ module.exports = function(config) {
       require("karma-spec-reporter")
     ],
 
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     browsers: ['Chrome']
   });
 };
