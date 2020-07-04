@@ -1,3 +1,5 @@
+require('babel-polyfill')
+
 //create globals used by production code:
 require('./setup-jest')
 
