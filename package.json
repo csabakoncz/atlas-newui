@@ -53,6 +53,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "backbone": "1.2.3",
     "backbone.babysitter": "0.1.12",
     "backbone.marionette": "^2.4.3",

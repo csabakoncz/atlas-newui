@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import 'jquery'
 import 'select2'
 import 'modules/Helpers' //registers Handlebars helpers
@@ -16,4 +17,8 @@ element.innerHTML = new Greeter('TS World').greet()
 
 document.body.appendChild(element);
 
+// Test ES6 polyfills: String.prototype.includes is missing in Firefox versions < 40
+// https://caniuse.com/#feat=es6-string-includes
+let check = 'JavaScript'.includes('Java')
+console.log(`'JavaScript'.includes('Java')=${check}`)
 
