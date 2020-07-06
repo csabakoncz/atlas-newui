@@ -178,3 +178,14 @@ CommonViewFunction.fetchRootClassificationAttributes({
         startApp();
     }
 });
+
+// unsupported ESNEXT feature as of Chrome 84, Firefox 80 or Typescript
+// https://github.com/tc39/proposal-throw-expressions
+function testThrowExpression(filename = throw new TypeError("Argument required")) {
+}
+try{
+    testThrowExpression()
+}
+catch(e){
+    console.log('caught ', e)
+}
