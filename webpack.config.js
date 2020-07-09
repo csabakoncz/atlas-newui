@@ -9,6 +9,22 @@ const atlasExternalLib=path.resolve(atlasPubDir,'js/external_lib')
 const atlasJsDir=path.resolve(__dirname,'src')
 const ourModules=path.resolve(__dirname,'node_modules')
 
+var babelLoader = {
+  loader: 'babel-loader',
+  options: {
+    presets: [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": 3
+        }
+      ]
+    ],
+    plugins: ["@babel/plugin-proposal-throw-expressions"],
+  }
+};
+
 module.exports = {
   mode: 'production',
   devtool: 'source-map',
@@ -40,26 +56,25 @@ module.exports = {
     rules: [
       {
         test: /\.m?js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: ["@babel/plugin-proposal-throw-expressions"],
-          }
-        }
+        exclude: /(node_modules|pnotify)/,
+        use: [
+          babelLoader,
+        ]
       },
       {
         test: /\.tsx?$/,
-        use: {
-          loader: 'ts-loader',
-          options: {
-            /**
-             * A value of false makes troubles with HtmlWebpackPlugin
-             */
-            transpileOnly: true
+        use: [
+          babelLoader,
+          {
+            loader: 'ts-loader',
+            options: {
+              /**
+               * A value of false makes troubles with HtmlWebpackPlugin
+               */
+              transpileOnly: true
+            }
           }
-        },
+        ],
         exclude: /node_modules/,
       },
       {
