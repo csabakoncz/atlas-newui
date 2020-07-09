@@ -1,4 +1,3 @@
-import 'babel-polyfill'
 import 'jquery'
 import 'select2'
 import 'modules/Helpers' //registers Handlebars helpers

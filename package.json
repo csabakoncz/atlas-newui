@@ -55,7 +55,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
     "backbone": "1.2.3",
     "backbone.babysitter": "0.1.12",
     "backbone.marionette": "^2.4.3",
@@ -69,6 +68,7 @@
     "backgrid-sizeable-columns": "0.1.1",
     "bootstrap": "3.3.7",
     "bootstrap-daterangepicker": "2.1.25",
+    "core-js": "^3.6.5",
     "d3": "3.5.17",
     "d3-tip": "0.6.8",
     "dagre-d3": "0.6.4",
