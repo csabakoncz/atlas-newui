@@ -49,9 +49,6 @@ module.exports = {
       _: 'underscore'
     }),
   ],
-  devServer: {
-    contentBase: './dist'
-  },
   module: {
     rules: [
       {
